@@ -38,7 +38,7 @@
                         <hr>
                         <div class="content">
                             <ul>
-                                <li><a href="/login.php">S'inscrire/Se connecter</a></li>
+                                <li><a href="/login/login.php">S'inscrire/Se connecter</a></li>
                             </ul>
                         </div>
                     </div>

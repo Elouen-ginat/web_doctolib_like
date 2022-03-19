@@ -1,87 +1,296 @@
+
+:root {
+  --main-bg-color: #1c232d;
+  --second-bg-color: #e7ebea;
+  --box-bg-color: #f2f6ff;
+  --error-bg-color: #b22f2f;
+
+  --border-color: #c4c4c4;
+  --errro-border-color: #811a00;
+
+  --main-button-color: #526dd5;
+  --second-button-color: rgb(69, 176, 248);
+
+  --second-text-color: #707275;
+  --title-text-color: #1b232d;
+}
+
 body {
-    background: #1c242d;
-  }
-  .box {
-    border: 1px solid #c4c4c4;
-    padding: 30px 25px 10px 25px;
-    background: white;
-    margin: 30px auto;
-    width: 360px;
-  }
-  h1.box-logo a {
-    text-decoration:none;
-  }
-  h1.box-title {
-    color: #AEAEAE;
-    background: #f8f8f8;
-    font-weight: 300;
-    padding: 15px 25px;
-    line-height: 30px;
-    font-size: 25px;
-    text-align:center;
-    margin: -27px -26px 26px;
-  }
-  .box-button {
-    border-radius: 5px;
-    background: #d2483c;
-    text-align: center;
-    cursor: pointer;
-    font-size: 19px;
-    width: 100%;
-    height: 51px;
-    padding: 0;
-    color: #fff;
-    border: 0;
-    outline:0;
-  }
-  .box-register
-  {
-    text-align:center;
-    margin-bottom:0px;
-  }
-  .box-register a
-  {
-    text-decoration:none;
-    font-size:12px;
-    color:#666;
-  }
-  .box-input, fieldset {
-    font-size: 14px;
-    background: #fff;
-    border: 1px solid #ddd;
+  background: var(--main-bg-color);
+  font-family: "Arial";
+}
+.box {
+  padding: 30px 25px 10px 25px;
+  background: var(--box-bg-color);
+  margin: 30px auto;
+  width: 360px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+h1.box-logo a.box-logo {
+  text-decoration:none;
+  font-size:40px;
+  color: var(--title-text-color);
+}
+h1.box-title {
+  color: var(--second-text-color);
+  background: var(--second-bg-color);
+  font-weight: 300;
+  padding: 15px 25px;
+  line-height: 30px;
+  font-size: 25px;
+  text-align:center;
+  margin: -31px -26px 18px;
+}
+.box-button {
+  border-radius: 5px;
+  background: var(--main-button-color);
+  text-align: center;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 19px;
+  width: 50%;
+  height: 51px;
+  padding: 0;
+  color: white;
+  border: 0;
+  outline:0;
+}
+.box-register-button {
+  border-radius: 5px;
+  background: var(--main-button-color);
+  text-align: center;
+  cursor: pointer;
+  font-size: 19px;
+  width: 50%;
+  float: right;
+  height: 51px;
+  padding: 0;
+  color: white;
+  border: 0;
+  outline:0;
+}
+.box-next-button {
+  border-radius: 5px;
+  float:right;
+  background: var(--main-button-color);
+  text-align: center;
+  cursor: pointer;
+  font-size: 19px;
+  width: 30%;
+  height: 51px;
+  padding: 0;
+  color: white;
+  border: 0;
+  outline:0;
+  margin-bottom: 15px;
+}
+.box-prev-button {
+  border-radius: 5px;
+  float:left;
+  background: var(--main-button-color);
+  text-align: center;
+  cursor: pointer;
+  font-size: 19px;
+  width: 40%;
+  height: 51px;
+  padding: 0;
+  color: white;
+  border: 0;
+  outline:0;
+  margin-bottom: 15px;
+}
+.box-register
+{
+  width: 100%;
+  text-align:center;
+  margin-bottom:0px;
+}
+.box-register a
+{
+  text-decoration:none;
+  font-size:12px;
+  color:#666;
+}
+.box-input, fieldset{
+  width: 95%;
+  font-size: 14px;
+  background: var(--second-bg-color);
+  border: 1px solid var(--border-color);
+  margin-bottom: 25px;
+  padding-left: 10px;
+  border-radius: 5px;
+  height: 50px;
+}
+input::placeholder {
+  color: var(--second-text-color);
+}
+input:invalid {
+  border-color: var(--errro-border-color);
+}
+legend {
+  font-size: 16px;
+  background: var(--second-bg-color);
+  border-radius: 5px;
+  padding: 3px;
+}
+.box-radio {
+  color:var(--second-text-color);
+  width: 93%;
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  height: fit-content;
+  border-radius: 5px;
+  background-color: var(--second-bg-color);
+}
+input[type="radio"] {
+  appearance: none;
+  display: none;
+}
+input[type="checkbox"] {
+  appearance: none;
+  display: none;
+}
+label {
+  line-height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: inherit;
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: linear 0.3s;
+  background-color: var(--box-bg-color);
+  color: var(--second-text-color);
+  border: 1px solid var(--border-color);
+}
+label.radio {
+  width: 100px;
+  height: 40px;
+}
+label.checkbox {
+  width: 50px;
+  height: 40px;
+  margin-bottom: 5px;
+  flex-basis: 25%;
+}
+input[type="radio"]:checked + label {
+  background-color: var(--main-button-color);
+  color: white;
+  font-weight: 900;
+  transition: 0.3s;
+}
+input[type="checkbox"]:checked + label {
+  background-color: var(--main-button-color);
+  color: white;
+  font-weight: 900;
+  transition: 0.3s;
+}
+.box-input:focus {
+  outline: none;
+  border-color:#5c7186;
+}
+.sucess h3 p{
+  text-align: center;
+  color: var(--main-bg-color);
+}
+.sucess a {
+  text-decoration: none;
+  color: var(--second-button-color);
+}
+p.errorMessage {
+    background-color: var(--error-bg-color);
+    border: var(--errro-border-color) 1px solid;
     margin-bottom: 25px;
-    padding-left:10px;
+    padding: 5px 10px;
+    height: fit-content;
+    line-height:30px;
+    vertical-align: middle;
     border-radius: 5px;
-    width: 347px;
-    height: 50px;
-  }
-  legend {
-    font-size: 14px;
-    background: #fff;
-  }
-  .box-radio {
-    align-items: center;
-  }
-  label {
-    margin-right: 15px;
-    line-height: 32px;
-  }
-  .box-input:focus {
-    outline: none;
-    border-color:#5c7186;
-  }
-  .sucess{
-    text-align: center;
+    width: 93%;
     color: white;
-  }
-  .sucess a {
-    text-decoration: none;
-    color: #58aef7;
-  }
-  p.errorMessage {
-      background-color: #e66262;
-      border: #AA4502 1px solid;
-      padding: 5px 10px;
-      color: #FFFFFF;
-      border-radius: 3px;
-  }
+    text-overflow: ellipsis;
+}
+
+@keyframes next {
+  from {width: 100%;}
+  to {width: 0%;}
+}
+
+@keyframes prev {
+  from {width: 0%;}
+  to {width: 100%;}
+}
+
+.float-container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.float-user-child {
+  width: 100%;
+  float: left;
+  overflow: hidden;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-left: 3px solid var(--main-button-color);
+  border-radius: 5px;
+}  
+.float-client-child {
+  width: 0%;
+  float: left;
+  overflow: hidden;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-left: 3px solid var(--second-button-color);
+  border-radius: 5px;
+} 
+.float-doctor-child {
+  width: 0%;
+  float: left;
+  overflow: hidden;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-left: 3px solid var(--main-button-color);
+  border-radius: 5px;
+} 
+
+.float-success-child {
+  width: 0%;
+  float: left;
+  overflow: hidden;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-left: 3px solid var(--second-button-color);
+  border-radius: 5px;
+} 
+
+.next-animation {
+  animation-name: next;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.prev-animation {
+  animation-name: prev;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}

@@ -1,7 +1,7 @@
 
 CREATE TABLE IF NOT EXISTS login (
     user_id INT AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL,
     grade ENUM('CLIENT', 'DOCTOR') NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS doctor (
     phone VARCHAR(15) NOT NULL UNIQUE,
     office VARCHAR(100) NOT NULL,
     activity_days JSON NOT NULL,
-    str_hour INT DEFAULT 8,
-    end_hour INT DEFAULT 18,
+    str_hour TIME NOT NULL,
+    end_hour TIME NOT NULL,
     PRIMARY KEY (doctor_id),
     FOREIGN KEY (user_id) REFERENCES login(user_id)
 );
