@@ -68,28 +68,30 @@ function prev(grade) {
 
 function setState(state) {
     console.log("setstate"+state)
-    onLoad()
-    floater_user.classList.remove("next-animation")
-    floater_user.classList.remove("prev-animation")
-    floater_client.classList.remove("next-animation")
-    floater_client.classList.remove("prev-animation")
-    floater_doctor.classList.remove("next-animation")
-    floater_doctor.classList.remove("prev-animation")
-    if (state == "CLIENT") {
-        floater_user.style.width = "0%"
-        floater_client.style.width = "100%"
-        floater_doctor.style.width = "0%"
-    }else if (state == "DOCTOR") {
-        floater_user.style.width = "0%"
-        floater_client.style.width = "0%"
-        floater_doctor.style.width = "100%"
-    }
-    else if (state == "SUCCESS") {
-        floater_user.style.width = "0%"
-        floater_client.style.width = "0%"
-        floater_doctor.style.width = "0%"
-        floater_success.style.width = "100%"
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        onLoad()
+        floater_user.classList.remove("next-animation")
+        floater_user.classList.remove("prev-animation")
+        floater_client.classList.remove("next-animation")
+        floater_client.classList.remove("prev-animation")
+        floater_doctor.classList.remove("next-animation")
+        floater_doctor.classList.remove("prev-animation")
+        if (state == "CLIENT") {
+            floater_user.style.width = "0%"
+            floater_client.style.width = "100%"
+            floater_doctor.style.width = "0%"
+        }else if (state == "DOCTOR") {
+            floater_user.style.width = "0%"
+            floater_client.style.width = "0%"
+            floater_doctor.style.width = "100%"
+        }
+        else if (state == "SUCCESS") {
+            floater_user.style.width = "0%"
+            floater_client.style.width = "0%"
+            floater_doctor.style.width = "0%"
+            floater_success.style.width = "100%"
+        }
+    }, false);
 
 }
 

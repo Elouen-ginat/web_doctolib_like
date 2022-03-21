@@ -128,7 +128,11 @@ function sumbitUserClient(mysqli $conn)
         $_POST['birthday'],
         $_POST['adresse'],
         $_POST['phone'],
-        $_POST['comment']
+        $_POST['comment'],
+        $_SESSION['username'],
+        $_SESSION['email'],
+        $_SESSION['grade'],
+        $_SESSION['hash']
     )) {
         // récupérer le prenom d'utilisateur et supprimer les antislashes ajoutés par le formulaire
         $firstname = stripslashes($_POST['firstname']);
@@ -198,7 +202,11 @@ function sumbitUserDoctor(mysqli $conn)
         $_POST['office'],
         $_POST['activity_days'],
         $_POST['str_hour'],
-        $_POST['end_hour']
+        $_POST['end_hour'],
+        $_SESSION['username'],
+        $_SESSION['email'],
+        $_SESSION['grade'],
+        $_SESSION['hash']
     )) {
         // récupérer le prenom d'utilisateur et supprimer les antislashes ajoutés par le formulaire
         $firstname = stripslashes($_POST['firstname']);
@@ -290,10 +298,10 @@ if (isset($_POST['next'])) {
     $prev_doctor_call = '<script type="text/javascript">prev("DOCTOR");</script>';
 }
 
-if (isset($_POST['submit_client'])) {
+if (isset($_POST['submit_client']) && !$is_refresh) {
     // Post user and client
     sumbitUserClient($conn);
-}else if (isset($_POST['submit_doctor'])) {
+}else if (isset($_POST['submit_doctor']) && !$is_refresh) {
     // Post user and doctor
     sumbitUserDoctor($conn);
 }else if (isset($_SESSION["state"]) && $is_refresh) {
@@ -345,8 +353,8 @@ if (isset($_GET['search']))
             <form class="float-client-child" action="" method="post">
                 <?php
                 if (!empty($message_client)) {
-                    echo "<p class='errorMessage'>$message_client</p>";
-                    //'<script type="text/javascript" defer>setState("CLIENT");</script>';
+                    echo "<p class='errorMessage'>$message_client</p>
+                    <script type='text/javascript'>setState('CLIENT');</script>";
                 }
                 ?>
                 <input type="text" class="box-input" name="firstname" placeholder="Prénom" value="<?php echo getInputValue('firstname'); ?>" required />
@@ -364,8 +372,8 @@ if (isset($_GET['search']))
             <form class="float-doctor-child" action="" method="post">
                 <?php
                 if (!empty($message_doctor)) {
-                    echo "<p class='errorMessage'>$message_doctor</p>";
-                    //'<script type="text/javascript" defer>setState("DOCTOR");</script>';
+                    echo "<p class='errorMessage'>$message_doctor</p>
+                    <script type='text/javascript'>setState('DOCTOR');</script>";
                 }
                 ?>
                 <input type="text" class="box-input" name="firstname" placeholder="Prénom" value="<?php echo getInputValue('firstname'); ?>" required />
