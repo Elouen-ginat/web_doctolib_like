@@ -413,7 +413,6 @@ if (isset($_GET['search']))
         </div>
         <p class="box-register">Déjà inscrit? <a href="?search=connect">Connectez-vous ici</a></p>
     </div>
-    <button onclick="success('CLIENT')">success</button>
 </body>
 <?php
 if (!empty($next_call)) {
