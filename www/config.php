@@ -1,12 +1,8 @@
 <?php
-// Informations d'identification
-define('DB_SERVER', 'database');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', $_ENV['MYSQL_ROOT_PASSWORD']);
-define('DB_NAME', 'Doctolib-SQL');
 
+require("params.php");
 // Connexion à la base de données MySQL 
-$conn = mysqli_connect("database", "root", $_ENV['MYSQL_ROOT_PASSWORD'], DB_NAME);
+$conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 // Vérifier la connexion
 if ($conn === false) {

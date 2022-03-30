@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS doctor (
 CREATE TABLE IF NOT EXISTS appointment (
     doctor_id INT NOT NULL,
     client_id INT NOT NULL,
+    datetime DATETIME NOT NULL UNIQUE,
     PRIMARY KEY (doctor_id, client_id),
     FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
