@@ -16,19 +16,18 @@ if (!isset($_SESSION["username"])) {
     <script type="text/javascript">
         jQuery(function($){
             $('.month').hide();
-            $('.month:first').show();
+            /*$('.month:first').show();*/
             $('.months a:first').addClass('active');
             var current = 1;
             $('.months a').click(function(){
-                var month =$(this).attr('id').replace('linkMonth','');
-                if (month != current)(
+                var month = $(this).attr('id').replace('linkMonth','');
+                if (month != current){
                     $('#month'+current).slideUp();
                     $('#month'+month).slideDown();
                     $('.months a').removeClass('active');
                     $('.months a#linkMonth'+month).addClass('active');
-                    current= month;
-                )
-                alert(month);
+                    current = month;
+                }
                 return false;
             });
 
@@ -47,7 +46,6 @@ if (!isset($_SESSION["username"])) {
     require('accueil.php');
     $date = new Date();
     $year = date('Y');
-    $month = date('m');
     $dates = $date->getAll($year);
     ?>
     <div class="periods">
@@ -100,7 +98,7 @@ if (!isset($_SESSION["username"])) {
 
 
 
-    <pre> <?php print_r($dates); ?> </pre>
+    <!--<pre> <?php print_r($dates); ?> </pre>-->
 </body>
 
 </html>
