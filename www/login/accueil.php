@@ -4,6 +4,7 @@ class Date{
     var $days = array('Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche');
     var $months = array('Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Décembre');
 
+
     function getAll($year){
         $r= array();
 
@@ -12,8 +13,10 @@ class Date{
             $y = $date->format('Y');
             $m = $date->format('m');
             $d = $date->format('j');
+            $h = $date->format('H');
+            $i = $date->format('i');
             $w = str_replace('0','7',$date->format('w'));
-            $r[$y][$m][$d] = $w;
+            $r[$y][$m][$d][$h][$i] = $w;
             $date->add(new DateInterval('P1D'));
 
         }

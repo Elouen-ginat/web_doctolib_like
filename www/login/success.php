@@ -46,6 +46,7 @@ if (!isset($_SESSION["username"])) {
     require('accueil.php');
     $date = new Date();
     $year = date('Y');
+ /*   $events = $date->getEvents($year);*/
     $dates = $date->getAll($year);
     ?>
     <div class="periods">
