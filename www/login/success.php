@@ -4,16 +4,17 @@ session_start();
 // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
-    exit();
-}
+    exit();}
+
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <link rel="stylesheet" href="../assets/css/style.css" />
     <script src="http://code.jquery.com/jquery.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
         jQuery(function($){
             $('.month').hide();
             /*$('.month:first').show();*/
@@ -32,17 +33,49 @@ if (!isset($_SESSION["username"])) {
             });
 
         });
-    </script>
+    </script>-->
+
+
 </head>
 
 <body>
+<?php
+$response = file_get_contents('http://localhost/api/doctor.php/lastname');
+$response = json_decode($response);
+foreach ($response as $id){
+    $nom =$id->lastname;
+    $prenom =$id->firstname;
+    $office =$id->office;
+    $num =$id->phone;
+    $infos = 'Docteur '.$nom.' '.$prenom."<br> Cabinet :".$office."<br> Numéro :".$num."<br>";
+}
+
+?>
+
     <div class="sucess">
         <h1>Bienvenue <?php echo $_SESSION['username']; ?>!</h1>
-        <p>C'est votre tableau de bord.</p>
+        <p>C'est votre tableau de bord.  </p>
         <a href="logout.php">Déconnexion</a>
     </div>
 
-    <?php
+    <div class="medecin">
+            <thead>
+                <tr>
+                    <?php foreach ($response as $id): ?>
+                        <th> <?php echo $infos; ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+
+               </tr>
+            </tbody>
+        </div>
+
+<!--
+
+
     require('accueil.php');
     $date = new Date();
     $year = date('Y');
@@ -99,7 +132,7 @@ if (!isset($_SESSION["username"])) {
 
 
 
-    <!--<pre> <?php print_r($dates); ?> </pre>-->
+    <pre> <?php print_r($dates); ?> </pre>-->
 </body>
 
 </html>
