@@ -4,8 +4,10 @@ session_start();
 // Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
-    exit();}
+    exit();
+}
 
+//echo "doctor_id = ". $_SESSION["doctor_id"];
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +19,7 @@ if (!isset($_SESSION["username"])) {
 </head>
 
 <body>
+
 <?php
 $response = file_get_contents('http://localhost/api/doctor.php/lastname');
 $response = json_decode($response);
@@ -65,10 +68,23 @@ $min = 15;
 $plage= $date->getMinPlage($min);
 ?>
 
+    <?php
+    $response = file_get_contents('http://localhost/api/doctor.php/lastname');
+    $response = json_decode($response);
+    foreach ($response as $id) {
+        $nom = $id->lastname;
+        $prenom = $id->firstname;
+        $office = $id->office;
+        $num = $id->phone;
+        $infos = 'Docteur ' . $nom . ' ' . $prenom . "<br> Cabinet :" . $office . "<br> Numéro :" . $num . "<br>";
+    }
+
+    ?>
+
 
     <div class="sucess">
         <h1>Bienvenue <?php echo $_SESSION['username']; ?>!</h1>
-        <p>C'est votre tableau de bord.  </p>
+        <p>C'est votre tableau de bord. </p>
         <a href="logout.php">Déconnexion</a>
 
     </div>
@@ -101,7 +117,6 @@ $plage= $date->getMinPlage($min);
             </thead>
 
     </div>
-
 </body>
 
 </html>
