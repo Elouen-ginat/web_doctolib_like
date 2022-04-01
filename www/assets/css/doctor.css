@@ -1,0 +1,133 @@
+:root {
+    --main-bg-color: #1c232d;
+    --second-bg-color: #e7ebea;
+    --box-bg-color: #f2f6ff;
+    --error-bg-color: #b22f2f;
+
+    --border-color: #c4c4c4;
+    --errro-border-color: #811a00;
+
+    --main-button-color: #526dd5;
+    --second-button-color: rgb(69, 176, 248);
+
+    --second-text-color: #707275;
+    --title-text-color: #1b232d;
+}
+
+body {
+    background: var(--main-bg-color);
+    font-family: "Arial";
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.cards_item {
+    background-color: #526dd5;
+    border-color: var(--second-button-color);
+    flex-basis: 25%;
+    padding: 10px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    border-width: 3px;
+    border-radius: 10px;
+    margin-top: 50px;
+    box-shadow:
+		0 1px 2px rgba(0,0,0,0.07), 
+		0 2px 4px rgba(0,0,0,0.07), 
+		0 4px 8px rgba(0,0,0,0.07), 
+		0 8px 16px rgba(0,0,0,0.07),
+		0 16px 32px rgba(0,0,0,0.07), 
+		0 32px 64px rgba(0,0,0,0.07);
+}
+
+.card_header {
+    height: 50px;
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.doctor_icon {
+    padding: 3px;
+    flex-grow: 1;
+}
+
+.doctor_name {
+    padding: 3px;
+    font-size: 20px;
+    flex-grow: 2;
+    display: flex;
+    align-items: center;
+}
+
+.doctor_arrow {
+    padding: 3px;
+    flex-grow: 1;
+    opacity: 0;
+}
+
+.doctor_info_recto {
+    margin-top: 3px;
+    overflow: hidden;
+    height: fit-content;
+    max-height: 300px;
+}
+
+.doctor_info_verso {
+    margin-top: 3px;
+    height: fit-content;
+    max-height: 0px;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.card_dates {
+    color: white;
+    font-size: 14px;
+    column-count: 3;
+    column-gap: 1rem;
+    width: 100%;
+}
+
+.card_hours {
+    margin-bottom: 5px;;
+}
+
+.date {
+    background-color: #b22f2f;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    break-inside: avoid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.info {
+    text-align: left;
+}
+
+.cards_item:hover .doctor_info_recto {
+    opacity: 0;
+    max-height: 0px;
+    transition: all 0.4s ease;
+}
+
+.cards_item:hover .doctor_info_verso {
+    opacity: 100;
+    max-height: 300px;
+    transition: all 0.5s 0.3s ease;
+}
+
+.cards_item:hover .doctor_arrow {
+    opacity: 100;
+    transition: all 0.5s 0.1s ease;
+}
