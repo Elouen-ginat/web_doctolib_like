@@ -14,12 +14,12 @@ function get_color($info, $day)
 {
     $info = json_decode($info, true);
     if (!$info) {
-        return "grey";
+        return "#8A93A6";
     }
     if (array_key_exists($day, $info)) {
-        return "blue";
+        return "#30BF45";
     } else {
-        return "grey";
+        return "#8A93A6";
     }
 }
 
@@ -44,24 +44,33 @@ foreach ($json as $idx => $info) {
 
     $cards .= '<button class="cards_item" type="submit" name="doctor_id" value="' . $info["doctor_id"] . '"">
         <div class="card_header">
-            <img class="doctor_icon" src="../assets/svg/doctor-svgrepo-com.svg" />
+            <img class="doctor_icon" src="../assets/svg/doctor-svgrepo-2.svg" />
             <div class="doctor_name">
                 <p>' . $info["lastname"] . ' ' . $info["firstname"] . '</p>
             </div>
             <img class="doctor_arrow" src="../assets/svg/arrow-right-svgrepo-com.svg" />
         </div>
         <div class="doctor_info_recto">
-            <div class="info">Bureau : ' . $info["office"] . '</div>
-            <div class="info">Telephone : ' . $info["phone"] . '</div>
+            <div class="info">
+                <img class="info_def" src="../assets/svg/172496_location_icon.svg" />
+                 <div class="info_office">'  . $info["office"] . '
+                </div>
+            </div>
+            <div class="info">
+            <img class="info_def" src="../assets/svg/3586359_device_mobile_phone_smartphone_icon.svg" />
+             <div class="info_num"> ' . $info["phone"] . '
+            </div>
+        </div>
+        
         </div>
         <div class="doctor_info_verso">
             <div class="card_hours">Disponible de ' . $info["str_hour"] . ' à ' . $info["end_hour"] . ' les :</div>
             <div class="card_dates">
                 <div class="date" style="background-color:' . $monday . '">Lundi</div>
-                <div class="date" style="background-color:' . $tuesday . '">Mardi</div>
-                <div class="date" style="background-color:' . $wednesday . '">Mercredi</div>
                 <div class="date" style="background-color:' . $thusday . '">Jeudi</div>
+                <div class="date" style="background-color:' . $tuesday . '">Mardi</div>
                 <div class="date" style="background-color:' . $friday . '">Vendredi</div>
+                <div class="date" style="background-color:' . $wednesday . '">Mercredi</div>
                 <div class="date" style="background-color:' . $saturday . '">Samedi</div>
             </div>
         </div>
