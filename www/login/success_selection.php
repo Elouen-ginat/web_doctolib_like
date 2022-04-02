@@ -52,14 +52,12 @@ foreach ($json as $idx => $info) {
         </div>
         <div class="doctor_info_recto">
             <div class="info">
-                <div class="info_def">Bureau :
-                </div>
+                <img class="info_def" src="../assets/svg/172496_location_icon.svg" />
                  <div class="info_office">'  . $info["office"] . '
                 </div>
             </div>
             <div class="info">
-                <div class="info_def">Telephone :
-            </div>
+            <img class="info_def" src="../assets/svg/3586359_device_mobile_phone_smartphone_icon.svg" />
              <div class="info_num"> ' . $info["phone"] . '
             </div>
         </div>
@@ -69,10 +67,10 @@ foreach ($json as $idx => $info) {
             <div class="card_hours">Disponible de ' . $info["str_hour"] . ' à ' . $info["end_hour"] . ' les :</div>
             <div class="card_dates">
                 <div class="date" style="background-color:' . $monday . '">Lundi</div>
-                <div class="date" style="background-color:' . $tuesday . '">Mardi</div>
-                <div class="date" style="background-color:' . $wednesday . '">Mercredi</div>
                 <div class="date" style="background-color:' . $thusday . '">Jeudi</div>
+                <div class="date" style="background-color:' . $tuesday . '">Mardi</div>
                 <div class="date" style="background-color:' . $friday . '">Vendredi</div>
+                <div class="date" style="background-color:' . $wednesday . '">Mercredi</div>
                 <div class="date" style="background-color:' . $saturday . '">Samedi</div>
             </div>
         </div>
