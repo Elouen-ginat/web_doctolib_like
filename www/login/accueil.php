@@ -37,10 +37,11 @@ class Date{
     function get_day($day){
         // date du jour
         $date = date($day);
+        echo $date;
         // tableau des jours de la semaine
         $joursem = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
         // extraction des jour, mois, an de la date
-        list($jour, $mois, $annee) = explode('/', $date);
+        list($jour, $mois, $annee) = explode('-', $date);
         // calcul du timestamp
         $timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
         // affichage du jour de la semaine

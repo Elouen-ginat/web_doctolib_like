@@ -30,6 +30,8 @@ foreach ($response as $id){
     $num =$id->phone;
     $start_hour= $id->str_hour;
     $end_hour=$id->end_hour;
+    $activity_days= $id->activity_days;
+    echo $activity_days;
     $infos = 'Docteur '.$nom.' '.$prenom."<br> Cabinet :".$office."<br> Numéro :".$num."<br>";
 }
 
@@ -43,10 +45,9 @@ function calandarbydate($date, $start , $end ){
         $dateTab = explode('-',$date);
         $startTab = explode(':',$start);
         $endTab = explode(':',$end);
-        $b = timestamp_date($dateTab[0],$dateTab[1],$dateTab[2],$startTab[0],$startTab[1],$startTab[2]);
 
         $a = array('date'=>$date,
-          'start'=>$b,
+          'start'=>timestamp_date($dateTab[0],$dateTab[1],$dateTab[2],$startTab[0],$startTab[1],$startTab[2]),
           'end'=> timestamp_date( $dateTab[0],$dateTab[1],$dateTab[2],$endTab[0],$endTab[1],$endTab[2]),
           'register' =>  array());
 
@@ -100,14 +101,31 @@ $plage= $date->getMinPlage($min);
                         $start_hour= $id->str_hour;
                         $end_hour=$id->end_hour;
                         $infos = '<br> Docteur '.$nom.' '.$prenom."<br> Cabinet :".$office."<br> Numéro :".$num."<br>";
-                        echo $infos;
+                        //echo $infos;
                         $calandar = array();
-                        foreach(range(0, 6) as $number){
-                            $j = $date->next_day($number);
-                            $calandar[$j] = calandarbydate($j, $start_hour ,  $end_hour );
+                        $calandar[date("d-m-Y")] = calandarbydate(date("d-m-Y"), $start_hour ,  $end_hour );
+                        //BDD appointment
+                        $start_app=array("9:30:0", "15:00:0", '19:20:0');
+                        $end_app=array("10:00:0", "16:00:0", '19:30:0');
+                        $day_app=array('04-04-2022','04-04-2022','05-04-2022');
+                        $nb_app=count($start_app);
+                        //echo $nb_app;
 
-                            $calandar[$j]['register'][] =  calandarbydate($j, "8:30:0" ,  "9:30:0" );
-                            }
+
+                        //créer le calendrier
+                        foreach(range(1, 6) as $number){
+                            $j = $date->next_day($number);
+
+                            $good_day= $date->get_day($j);
+                            $v = json_decode($activity_days, true);
+
+                            if (array_key_exists($good_day,$v)){
+                                $calandar[$j] = calandarbydate($j, $start_hour ,  $end_hour );
+                                //$calandar[$j]['register'][] =  calandarbydate($j, "9:30:00" ,"10:00:00");
+                                }}
+                        foreach(range(0, $nb_app-1) as $nb){
+                            $calandar[$day_app[$nb]]['register'][] =  calandarbydate($day_app[$nb], $start_app[$nb] ,$end_app[$nb]);
+                        }
                         echo $date->viewCalandar($calandar ,$plage );
 
                         ?></th>
