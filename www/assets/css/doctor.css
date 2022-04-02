@@ -163,3 +163,56 @@ body {
     display: inline;
     font-family: 'Courier New', Courier, monospace;
 }
+
+.navigation {
+    width: 100%;
+    background-color: #8A93A6;
+    position: relative;
+    top:5px;
+  }
+  
+  .images {
+    width: 100%;
+    max-width: 20px;
+    float: left;
+  }
+  
+  .logout {
+    font-size: 15px;
+    font-family: 'Arial', sans-serif;
+      position: relative;
+    right: -5px;
+    bottom: -2px;
+    overflow: hidden;
+    letter-spacing: 3px;
+    opacity: 0;
+    transition: opacity .7s;
+    -webkit-transition: opacity .9s;
+    
+  }
+  
+  .button {
+      text-decoration: none;
+      float: right;
+    padding: 12px;
+    margin: 15px;
+    color: #05AFF2;
+    width: 35px;
+    background-color: #8A93A6;
+    transition: width .7s;
+    -webkit-transition: width .9s;
+    overflow: hidden
+  }
+  
+  a:hover {
+    width :fit-content;
+  }
+  
+  a:hover .logout{
+    opacity: .9;
+    color: #000;
+  }
+  
+  a {
+    text-decoration: none;
+  }

@@ -107,6 +107,18 @@ selectDoctor();
             </div>
         </div>
     </section>
+    <div class="navigation">
+  <form method="POST" action="logout.php">
+  <a class="button" href="logout.php">
+    <img class = "images" src="../assets/svg/turn-off-svgrepo-com.svg">
+
+    <div class="logout">LOGOUT</div>
+
+  </a>
+  </form>
+</div>
+
+    
     <section class="section">
         <div class="container">
             <form class="cards" method="post">
