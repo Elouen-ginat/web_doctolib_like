@@ -7,8 +7,8 @@
     --border-color: #c4c4c4;
     --errro-border-color: #811a00;
 
-    --main-button-color: #526dd5;
-    --second-button-color: rgb(69, 176, 248);
+    --main-button-color: #02a1e0;
+    --second-button-color: #05AFF2;
 
     --second-text-color: #707275;
     --title-text-color: #1b232d;
@@ -26,7 +26,7 @@ body {
 }
 
 .cards_item {
-    background-color: #526dd5;
+    background-color: #05AFF2;
     border-color: var(--second-button-color);
     flex-basis: 25%;
     padding: 10px;
@@ -64,6 +64,10 @@ body {
     flex-grow: 2;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
+    font-weight: bold; 
+    text-decoration: underline; 
+
 }
 
 .doctor_arrow {
@@ -76,7 +80,8 @@ body {
     margin-top: 3px;
     overflow: hidden;
     height: fit-content;
-    max-height: 300px;
+    max-height: 500px;
+    justify-content: flex-start;
 }
 
 .doctor_info_verso {
@@ -113,6 +118,7 @@ body {
 
 .info {
     text-align: left;
+
 }
 
 .cards_item:hover .doctor_info_recto {
@@ -130,4 +136,20 @@ body {
 .cards_item:hover .doctor_arrow {
     opacity: 100;
     transition: all 0.5s 0.1s ease;
+}
+
+.info_def{
+    text-decoration: underline; 
+    display: inline;
+}
+
+.info_office{
+    font-style: italic; 
+    display: inline;
+}
+
+.info_num{
+    font-weight: bold; 
+    display: inline;
+    font-family: 'Courier New', Courier, monospace;
 }
