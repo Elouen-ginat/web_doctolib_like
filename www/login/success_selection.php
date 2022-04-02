@@ -112,7 +112,7 @@ selectDoctor();
   <a class="button" href="logout.php">
     <img class = "images" src="../assets/svg/turn-off-svgrepo-com.svg">
 
-    <div class="logout">LOGOUT</div>
+    <div class="logout">Déconnexion</div>
 
   </a>
   </form>

@@ -211,6 +211,7 @@ body {
   a:hover .logout{
     opacity: .9;
     color: #000;
+    text-transform: uppercase;
   }
   
   a {
