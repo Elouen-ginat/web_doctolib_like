@@ -150,6 +150,7 @@ body {
 .info_def{
     margin: 3px;
     width: 10%;
+    max-width: 40px;
 }
 
 .info_office{
