@@ -67,8 +67,6 @@ foreach ($json as $idx => $info) {
                  <div class="info_office">'  . $info["birthday"] . '</div>
             </div>
         </div>
-        
-        </div>
         <div class="doctor_info_verso">
             <div class="card_hours">Commentaire : </div>
             <div class="card_hours">' . $info["comment"] . '</div>
