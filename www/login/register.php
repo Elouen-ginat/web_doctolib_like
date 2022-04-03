@@ -101,7 +101,8 @@ function addUser(mysqli $conn, string $username, string $email, string $grade, s
     return mysqli_query($conn, $query);
 }
 
-function removeUser(mysqli $conn, string $username) {
+function removeUser(mysqli $conn, string $username)
+{
     $query = "DELETE FROM `login` WHERE username='$username'";
     console_log($query);
     // Exécuter la requête sur la base de données
@@ -229,7 +230,7 @@ function sumbitUserDoctor(mysqli $conn)
         foreach ($activity_days as $day) {
             $activity_days_json->$day = true;
         }
-		$activity_days_json = json_encode($activity_days_json,JSON_FORCE_OBJECT);
+        $activity_days_json = json_encode($activity_days_json, JSON_FORCE_OBJECT);
         // récupérer telephone
         $str_hour = stripslashes($_POST['str_hour']);
         $str_hour = mysqli_real_escape_string($conn, $str_hour);
@@ -242,31 +243,38 @@ function sumbitUserDoctor(mysqli $conn)
         $grade = $_SESSION['grade'];
         $hash = $_SESSION['hash'];
 
-        // Add user
-        $res = addUser($conn, $username, $email, $grade, $hash);
-        if ($res) {
-            // Get user ID
-            $user_id = getUserID($conn, $username, $hash);
-            if ($user_id != NULL) {
-                // Add doctor
-                $query = "INSERT INTO `doctor`(`doctor_id`, `user_id`, `firstname`, `lastname`, `phone`, `office`, `activity_days`, `str_hour`, `end_hour`) 
+        // Test if hours are valid
+        $str_hour_date = new DateTime($str_hour);
+        $end_hour_date = new DateTime($end_hour);
+        if ($str_hour_date < $end_hour_date) {
+            // Add user
+            $res = addUser($conn, $username, $email, $grade, $hash);
+            if ($res) {
+                // Get user ID
+                $user_id = getUserID($conn, $username, $hash);
+                if ($user_id != NULL) {
+                    // Add doctor
+                    $query = "INSERT INTO `doctor`(`doctor_id`, `user_id`, `firstname`, `lastname`, `phone`, `office`, `activity_days`, `str_hour`, `end_hour`) 
                 VALUES (NULL,'$user_id','$firstname','$lastname','$phone','$office','$activity_days_json','$str_hour','$end_hour')";
-                console_log($query);
-                // Exécuter la requête sur la base de données
-                $res = mysqli_query($conn, $query);
-                if ($res) {
-                    $_SESSION['state'] = 'SUCCESS';
-                    $success_call = '<script type="text/javascript">success("DOCTOR");</script>';
+                    console_log($query);
+                    // Exécuter la requête sur la base de données
+                    $res = mysqli_query($conn, $query);
+                    if ($res) {
+                        $_SESSION['state'] = 'SUCCESS';
+                        $success_call = '<script type="text/javascript">success("DOCTOR");</script>';
+                    } else {
+                        removeUser($conn, $username);
+                        $message_doctor = "Erreur de connection à la base des Médecins";
+                    }
                 } else {
                     removeUser($conn, $username);
-                    $message_doctor = "Erreur de connection à la base des Médecins";
+                    $message_doctor = "Impossible de récuperer le profil utilisateur";
                 }
             } else {
-                removeUser($conn, $username);
-                $message_doctor = "Impossible de récuperer le profil utilisateur";
+                $message_doctor = "Erreur de connection à la base des Médecins";
             }
         } else {
-            $message_doctor = "Erreur de connection à la base des Médecins";
+            $message_doctor = "L'heure de début doit être avant l'heure de fin";
         }
     } else {
         $message_doctor = "Veuillez remplir toutes les informations requises";
@@ -290,11 +298,11 @@ updateSessionVar('comment');
 if (isset($_POST['next'])) {
     // next page
     goNext($conn);
-}else if (isset($_POST['prev_client'])) {
+} else if (isset($_POST['prev_client'])) {
     // prev page from client
     $_SESSION['state'] = 'USER';
     $prev_client_call = '<script type="text/javascript">prev("CLIENT");</script>';
-}else if (isset($_POST['prev_doctor'])) {
+} else if (isset($_POST['prev_doctor'])) {
     // prev page from doctor
     $_SESSION['state'] = 'USER';
     $prev_doctor_call = '<script type="text/javascript">prev("DOCTOR");</script>';
@@ -303,18 +311,17 @@ if (isset($_POST['next'])) {
 if (isset($_POST['submit_client']) && !$is_refresh) {
     // Post user and client
     sumbitUserClient($conn);
-}else if (isset($_POST['submit_doctor']) && !$is_refresh) {
+} else if (isset($_POST['submit_doctor']) && !$is_refresh) {
     // Post user and doctor
     sumbitUserDoctor($conn);
-}else if (isset($_SESSION["state"]) && $is_refresh) {
+} else if (isset($_SESSION["state"]) && $is_refresh) {
     // set state
     $state = $_SESSION["state"];
     $set_state = "<script type='text/javascript'>setState('$state');</script>";
 }
 
 
-if (isset($_GET['search']))
-{
+if (isset($_GET['search'])) {
     search($_GET['search']);
 }
 
