@@ -77,23 +77,39 @@ function getAppointment($client_id = 0)
     echo json_encode($response, JSON_PRETTY_PRINT);
 }
 
+// Get str_hour and end_hour of doctor
+function getWorkingInfo($doctor_id = 0)
+{
+    global $conn;
+    $query = "SELECT str_hour, end_hour, activity_days FROM doctor WHERE doctor_id=" . $doctor_id . " LIMIT 1";
+    $result = mysqli_query($conn, $query);
+    $doctor = mysqli_fetch_assoc($result);
+    if ($doctor != null) {
+        return array(
+            "str_hour" => new DateTime($doctor["str_hour"]),
+            "end_hour" => new DateTime($doctor["end_hour"]),
+            "activity_days" => json_decode($doctor["activity_days"], true)
+        );
+    } else {
+        return null;
+    }
+}
+
 function getAppointmentsDate($doctor_id, $str_date, $end_date)
 {
     global $conn;
     header('Content-Type: application/json');
     // Get str_hour and end_hour of doctor
-    $query = "SELECT str_hour, end_hour, activity_days FROM doctor WHERE doctor_id=" . $doctor_id . " LIMIT 1";
-    $result = mysqli_query($conn, $query);
-    $doctor = mysqli_fetch_assoc($result);
-    if ($doctor != null) {
-        $str_hour = new DateTime($doctor["str_hour"]);
-        $end_hour = new DateTime($doctor["end_hour"]);
-        $activity_days = json_decode($doctor["activity_days"], true);
-    } else {
+    $doctor_info = getWorkingInfo($doctor_id);
+    if ($doctor_info == null) {
         $error = array("id" => "$doctor_id", "error" => "No doctor found");
         http_response_code(500);
         echo json_encode($error, JSON_PRETTY_PRINT);
         return;
+    } else {
+        $str_hour = $doctor_info["str_hour"];
+        $end_hour = $doctor_info["end_hour"];
+        $activity_days = $doctor_info["activity_days"];
     }
     // Get all appointments interval hours
     $date = $str_date;
@@ -116,7 +132,7 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
                     return;
                 }
             }
-        }else {
+        } else {
             $key = $date->format("Y-m-d");
             $appointments[$key] = null;
         }
@@ -153,35 +169,77 @@ function getClientID($username, $password)
 
 function AddAppointment()
 {
-    header('Content-Type: application/json');
     global $conn;
+    header('Content-Type: application/json');
     $doctor_id = stripslashes($_POST["doctor_id"]);
-    $datetime = stripslashes($_POST["datetime"]);
+    $datetime = new DateTime(stripslashes($_POST["datetime"]));
     $username = stripslashes($_POST["username"]);
     $password = stripslashes($_POST["password"]);
+    // Get str_hour and end_hour of doctor
+    $doctor_info = getWorkingInfo($doctor_id);
+    if ($doctor_info == null) {
+        $response = array(
+            'status' => 200,
+            'status_message' => 'No doctor found.'
+        );
+        echo json_encode($response);
+        return;
+    } else {
+        $str_hour = $doctor_info["str_hour"];
+        $end_hour = $doctor_info["end_hour"];
+        $activity_days = $doctor_info["activity_days"];
+    }
 
+    // Test if the appointment is in the working hours
+    $actual_hour = new DateTime($datetime->format("H:i:s"));
+    if ($actual_hour < $str_hour || $actual_hour > $end_hour) {
+        $response = array(
+            'status' => 500,
+            'status_message' => 'The appointment is not in the working hours.'
+        );
+        echo json_encode($response);
+        return;
+    }
+
+    // Test if the appointment is in the working days
+    if (!array_key_exists(strtolower($datetime->format("l")), $activity_days)) {
+        $response = array(
+            'status' => 500,
+            'status_message' => 'The appointment is not in the working days.'
+        );
+        echo json_encode($response);
+        return;
+    }
+
+    // Test if you are a client
     $client_id = getClientID($username, $password);
     if ($client_id == null) {
         $response = array(
             'status' => 500,
-            'status_message' => 'erreur. Vous n\'êtes pas un client'
+            'status_message' => 'You are not a client.'
         );
-    } else {
-        $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`) VALUES ('$doctor_id','$client_id','$datetime')";
-        if (mysqli_query($conn, $query)) {
-            $response = array(
-                'status' => 200,
-                'status_message' => 'RDV ajoute avec succes.'
-            );
-        } else {
-            $response = array(
-                'status' => 500,
-                'status_message' => 'erreur. ' . mysqli_error($conn)
-            );
-        }
+        echo json_encode($response);
+        return;
     }
-    header('Content-Type: application/json');
-    echo json_encode($response);
+
+    // Add appointment
+    $datetime = $datetime->format("Y-m-d H:i:s");
+    $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`) VALUES ('$doctor_id','$client_id','$datetime')";
+    if (mysqli_query($conn, $query)) {
+        $response = array(
+            'status' => 200,
+            'status_message' => 'Appointment added.'
+        );
+        echo json_encode($response);
+        return;
+    } else {
+        $response = array(
+            'status' => 500,
+            'status_message' => 'Error: ' . mysqli_error($conn)
+        );
+        echo json_encode($response);
+        return;
+    }
 }
 
 ?>

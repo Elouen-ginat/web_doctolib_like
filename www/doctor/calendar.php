@@ -78,8 +78,9 @@ function post($datetime)
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     $response = curl_exec($ch);
+    echo $response;
     $response = json_decode($response, true);
-    if ($response["status"] == 200) {
+    if ($response != null && $response["status"] == 200) {
         return true;
     } else {
         return false;
@@ -119,7 +120,6 @@ function getAppointments()
     $appointments = array();
     if ($response === false) {
         $error = "Impossible de se connecter à l'API";
-        return;
     } else {
         $appointments = json_decode($response, true);
     }
@@ -161,13 +161,11 @@ if (!$is_refresh && $appointment_is_set != null) {
         $datetime = new DateTime($datetime);
     } catch (Exception $e) {
         $error = "La date n'est pas valide";
-        return;
     }
     $datetime = $datetime->format('Y-m-d H:i:s');
     $sucess = post($datetime);
     if (!$sucess) {
         $error = "Impossible de prendre le rendez-vous";
-        return;
     }
     $days = getAppointments();
 }
