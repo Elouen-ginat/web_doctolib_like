@@ -36,7 +36,13 @@ if (isset($_POST['username'])) {
         $_SESSION['username'] = $username;
         $_SESSION['password'] = $hash;
         getStatus($conn); // admin, doctor, patient
-        header("Location:../doctor/select.php");
+        if ($_SESSION['user_type'] == 'admin') {
+            header("Location: ../client/select.php");
+        } else if ($_SESSION['user_type'] == 'doctor') {
+            header("Location: ../doctor/select.php");
+        } else if ($_SESSION['user_type'] == 'client') {
+            header("Location: ../doctor/select.php");
+        }
         exit;
     } else {
         $message = "Le nom d'utilisateur ou le mot de passe est incorrect.";

@@ -168,10 +168,8 @@ function getClientID($username, $password)
     }
 }
 
-function getStatus($conn)
+function getStatus($conn, $username, $password)
 {
-    $username = $_SESSION['username'];
-    $password = $_SESSION['password'];
     $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id = client.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $client_row = mysqli_num_rows($result);
@@ -181,11 +179,11 @@ function getStatus($conn)
     $doctor_row = mysqli_num_rows($result);
 
     if ($client_row == 1) {
-        $_SESSION['user_type'] = 'client';
+        return 'client';
     } else if ($doctor_row == 1) {
-        $_SESSION['user_type'] = 'doctor';
+        return 'doctor';
     } else {
-        $_SESSION['user_type'] = 'admin';
+        return'admin';
     }
 }
 
