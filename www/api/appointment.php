@@ -142,8 +142,9 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
 
     // Get all doctor's appointments
     $query = "SELECT client_id, datetime FROM appointment WHERE doctor_id=" . $doctor_id;
-    $result = mysqli_query($conn, $query);
-    while ($row = mysqli_fetch_assoc($result)) {
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    foreach ($rows as $row) {
         $datetime = $row["datetime"];
         $client_id = $row["client_id"];
         if (array_key_exists($datetime, $appointments)) {
@@ -157,13 +158,34 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
 function getClientID($username, $password)
 {
     global $conn;
-    $query = "SELECT client_id FROM `login` INNER JOIN `client` ON login.user_id WHERE username='$username' and password='$password'";
+    $query = "SELECT client_id FROM `login` INNER JOIN `client` ON login.user_id = client.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $client_row = mysqli_fetch_assoc($result);
     if ($client_row != null) {
         return $client_row["client_id"];
     } else {
         return null;
+    }
+}
+
+function getStatus($conn)
+{
+    $username = $_SESSION['username'];
+    $password = $_SESSION['password'];
+    $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id = client.user_id WHERE username='$username' and password='$password'";
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $client_row = mysqli_num_rows($result);
+
+    $query = "SELECT * FROM `login` INNER JOIN `doctor` ON login.user_id = doctor.user_id WHERE username='$username' and password='$password'";
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $doctor_row = mysqli_num_rows($result);
+
+    if ($client_row == 1) {
+        $_SESSION['user_type'] = 'client';
+    } else if ($doctor_row == 1) {
+        $_SESSION['user_type'] = 'doctor';
+    } else {
+        $_SESSION['user_type'] = 'admin';
     }
 }
 
@@ -175,6 +197,7 @@ function AddAppointment()
     $datetime = new DateTime(mysqli_real_escape_string($conn, stripslashes($_POST["datetime"])));
     $username = mysqli_real_escape_string($conn, stripslashes($_POST["username"]));
     $password = mysqli_real_escape_string($conn, stripslashes($_POST["password"]));
+    $comment = mysqli_real_escape_string($conn, stripslashes($_POST["comment"]));
     // Get str_hour and end_hour of doctor
     $doctor_info = getWorkingInfo($doctor_id);
     if ($doctor_info == null) {
@@ -211,7 +234,7 @@ function AddAppointment()
         return;
     }
 
-    // Test if you are a client
+    // Test if login is correct
     $client_id = getClientID($username, $password);
     if ($client_id == null) {
         $response = array(
@@ -224,7 +247,7 @@ function AddAppointment()
 
     // Add appointment
     $datetime = $datetime->format("Y-m-d H:i:s");
-    $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`) VALUES ('$doctor_id','$client_id','$datetime')";
+    $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`, `comment`) VALUES ('$doctor_id','$client_id','$datetime','$comment')";
     if (mysqli_query($conn, $query)) {
         $response = array(
             'status' => 200,

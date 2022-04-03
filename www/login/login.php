@@ -5,11 +5,11 @@ session_start();
 function getStatus($conn) {
     $username = $_SESSION['username'];
     $password = $_SESSION['password'];
-    $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id WHERE username='$username' and password='$password'";
+    $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id = client.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $client_row = mysqli_num_rows($result);
 
-    $query = "SELECT * FROM `login` INNER JOIN `doctor` ON login.user_id WHERE username='$username' and password='$password'";
+    $query = "SELECT * FROM `login` INNER JOIN `doctor` ON login.user_id = doctor.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $doctor_row = mysqli_num_rows($result);
 

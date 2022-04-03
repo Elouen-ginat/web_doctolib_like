@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS appointment (
     doctor_id INT NOT NULL,
     client_id INT NOT NULL,
     datetime DATETIME NOT NULL UNIQUE,
+    comment VARCHAR(255),
     PRIMARY KEY (doctor_id, client_id, datetime),
     FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)

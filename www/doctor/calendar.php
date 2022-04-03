@@ -66,12 +66,12 @@ function getStartAndEndDate($week, $year)
 
 
 // Ajouter un rendez-vous
-function post($datetime)
+function post($datetime, $comment)
 {
     $url = "http://localhost/api/appointment.php";
     $data = array(
         'doctor_id' => $_SESSION["doctor_id"], 'username' => $_SESSION["username"],
-        'password' => $_SESSION["password"], 'datetime' => $datetime
+        'password' => $_SESSION["password"], 'datetime' => $datetime, 'comment' => $comment
     );
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -91,8 +91,11 @@ function post($datetime)
 $calendar = "";
 // Vérifiez si le formulaire a été soumis avec un rendez-vous
 $appointment_is_set = null;
+// Affiche l'overlay de commentaire
+$show_comment_overlay = false;
 
 updateSessionVar('date');
+updateSessionVar('comment');
 
 // On retourne sur la page de selection de médecin
 if (!$is_refresh && isset($_POST['prev_doctor'])) {
@@ -100,6 +103,33 @@ if (!$is_refresh && isset($_POST['prev_doctor'])) {
     $_SESSION['doctor_id'] = '';
     header("Location:../doctor/select.php");
     exit;
+}
+
+function getAPIResponse($dates)
+{
+    $url = 'http://localhost/api/appointment.php?id=' . $_SESSION["doctor_id"] . '&str_date=' . $dates["str_date"] . '&end_date=' . $dates["end_date"] . '';
+    $ch = curl_init($url);
+    try {
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            return false;
+        }
+
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($http_code == intval(200)) {
+            return $response;
+        } else {
+            return false;
+        }
+    } catch (\Throwable $th) {
+        return false;
+    } finally {
+        curl_close($ch);
+    }
 }
 
 
@@ -114,11 +144,10 @@ function getAppointments()
     $dates = getStartAndEndDate($week, $year);
 
     //Appel l'api pour recuperer les rendez-vous  
-    $url = 'http://localhost/api/appointment.php?id=' . $_SESSION["doctor_id"] . '&str_date=' . $dates["str_date"] . '&end_date=' . $dates["end_date"] . '';
-    $response = file_get_contents($url);
+    $response = getAPIResponse($dates);
 
     $appointments = array();
-    if ($response === false) {
+    if (!$response) {
         $error = "Impossible de se connecter à l'API";
     } else {
         $appointments = json_decode($response, true);
@@ -144,7 +173,6 @@ function getAppointments()
         $days[$day][$time]["datetime"] = $date_str;
 
         //Si un rdv a été cliqué
-        updateSessionVar($date_str_post);
         if (isset($_POST[$date_str_post])) {
             $appointment_is_set = $date_str;
         }
@@ -154,8 +182,8 @@ function getAppointments()
 
 $days = getAppointments();
 
-// Get all appointment status
-if (!$is_refresh && $appointment_is_set != null) {
+// Set the appointment datetime
+if ($appointment_is_set != null) {
     $datetime = stripslashes($appointment_is_set);
     try {
         $datetime = new DateTime($datetime);
@@ -163,14 +191,46 @@ if (!$is_refresh && $appointment_is_set != null) {
         $error = "La date n'est pas valide";
     }
     $datetime = $datetime->format('Y-m-d H:i:s');
-    $sucess = post($datetime);
+    $_SESSION['datetime'] = $datetime;
+    $show_comment_overlay = true;
+}
+// Si le formulaire a été soumis avec un rendez-vous on poste le rendez-vous
+if (!$is_refresh && isset($_POST['comment']) && $_SESSION['datetime'] != null) {
+    $comment = stripslashes($_POST['comment']);
+    $sucess = post($datetime, $comment);
     if (!$sucess) {
         $error = "Impossible de prendre le rendez-vous";
     }
     $days = getAppointments();
+    $show_comment_overlay = false;
 }
 
 // Create HTML for the calendar
+
+function get_comment_overlay_html($show)
+{
+    if ($show) {
+        $style = "display:block";
+    } else {
+        $style = "display:none";
+    }
+    $html = '<div class="comment-container" style="' . $style . '">
+            <div class="comment-box">
+                <div class="comment-box-header">
+                    <span class="comment-box-title">Commentaire</span>
+                    <span class="comment-box-close">&times;</span>
+                </div>
+                <div class="comment-box-body">
+                    <form method="post">
+                        <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Votre commentaire"
+                            value="<?php echo getInputValue("comment"); ?>"></textarea>
+                        <input type="submit" name="comment_submit" value="Prendre rendez-vous" />
+                    </form>
+                </div>
+            </div>
+        </div>';
+    return $html;
+}
 
 function get_list_of_appointment(array $times)
 {
@@ -179,7 +239,7 @@ function get_list_of_appointment(array $times)
         $time_str = strtotime($time);
         $time_str = date('H:i', $time_str);
         if ($time_str == '00:00') {
-            $time_str = 'Ne travaille pas'; 
+            $time_str = 'Ne travaille pas';
         }
         if ($data["free"] && $time_str != "00:00") {
             $color = "rgb(69, 176, 248)";
@@ -192,6 +252,7 @@ function get_list_of_appointment(array $times)
     return $html;
 }
 
+$overlay = get_comment_overlay_html($show_comment_overlay);
 
 foreach ($days as $day => $times) {
     $day_obj = strtotime($day);
@@ -215,12 +276,15 @@ foreach ($days as $day => $times) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
     <link rel="stylesheet" href="/assets/css/bulma.min.css">
-    <link rel="stylesheet" href="../assets/css/calendar.css" >
+    <link rel="stylesheet" href="../assets/css/calendar.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
-
+    <link rel="stylesheet" href="../assets/css/overlay.css" />
 </head>
 
 <body>
+    <div class="overlay">
+        <?php echo $overlay; ?>
+    </div>
     <section class="hero is-medium is-info is-bold">
         <div class="hero-body">
             <div class="container has-text-centered">
