@@ -178,6 +178,9 @@ function get_list_of_appointment(array $times)
     foreach ($times as $time => $data) {
         $time_str = strtotime($time);
         $time_str = date('H:i', $time_str);
+        if ($time_str == '00:00') {
+            $time_str = 'Ne travaille pas'; 
+        }
         if ($data["free"] && $time_str != "00:00") {
             $color = "rgb(69, 176, 248)";
             $html .= '<input class="appointment-time" type="submit" name="' . $data["datetime"] . '" value="' . $time_str . '" class="appointment-time" style="background-color:' . $color . '"></input>';

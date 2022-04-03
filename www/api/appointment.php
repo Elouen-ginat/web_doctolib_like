@@ -11,8 +11,8 @@ switch ($request_method) {
             $id = intval($_GET["id"]);
             if (!empty($_GET["str_date"]) && !empty($_GET["end_date"])) {
                 try {
-                    $str_date = new DateTime($_GET["str_date"]);
-                    $end_date = new DateTime($_GET["end_date"]);
+                    $str_date = new DateTime(mysqli_real_escape_string($conn, $_GET["str_date"]));
+                    $end_date = new DateTime(mysqli_real_escape_string($conn, $_GET["end_date"]));
                 } catch (Exception $e) {
                     $error = array("id" => "$id", "error" => "Dates are not valid");
                     http_response_code(500);
@@ -171,10 +171,10 @@ function AddAppointment()
 {
     global $conn;
     header('Content-Type: application/json');
-    $doctor_id = stripslashes($_POST["doctor_id"]);
-    $datetime = new DateTime(stripslashes($_POST["datetime"]));
-    $username = stripslashes($_POST["username"]);
-    $password = stripslashes($_POST["password"]);
+    $doctor_id = mysqli_real_escape_string($conn, stripslashes($_POST["doctor_id"]));
+    $datetime = new DateTime(mysqli_real_escape_string($conn, stripslashes($_POST["datetime"])));
+    $username = mysqli_real_escape_string($conn, stripslashes($_POST["username"]));
+    $password = mysqli_real_escape_string($conn, stripslashes($_POST["password"]));
     // Get str_hour and end_hour of doctor
     $doctor_info = getWorkingInfo($doctor_id);
     if ($doctor_info == null) {
