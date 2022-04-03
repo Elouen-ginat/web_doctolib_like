@@ -74,16 +74,16 @@ $json = get_client_info();
 updateSessionVar('search');
 updateSessionVar('enabled');
 
-if (isset($_POST['search'])) {
-    $search = strtolower($_POST['search']);
+if (isset($_SESSION['post_search'])) {
+    $search = strtolower($_SESSION['post_search']);
     $filtered_json = array_filter($json, function ($item) use ($search) {
         return strpos(strtolower($item['lastname']), $search) !== false || strpos(strtolower($item['firstname']), $search) !== false;
     });
     $json = $filtered_json;
     echo "eee";
 }
-if (isset($_POST['enabled'])) {
-    $client_id = stripslashes($_POST['enabled']);
+if (isset($_SESSION['post_enabled'])) {
+    $client_id = stripslashes($_SESSION['post_enabled']);
     $client_selected = array_filter($json, function ($item) use ($client_id) {
         return $item['client_id'] == $client_id;
     });

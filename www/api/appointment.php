@@ -153,7 +153,7 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date, $username, $passw
     }
 
     // Get all doctor's appointments
-    $query = "SELECT client_id, datetime, comment FROM appointment INNER JOIN client ON appointment.client_id = client.client_id WHERE doctor_id=" . $doctor_id;
+    $query = "SELECT *, client.comment as comment_client, appointment.comment as comment FROM appointment INNER JOIN client ON appointment.client_id = client.client_id WHERE doctor_id=" . $doctor_id;
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
     foreach ($rows as $row) {
@@ -164,7 +164,7 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date, $username, $passw
         $lastname = $row["lastname"];
         if (array_key_exists($datetime, $appointments)) {
             if ($status == 'doctor') {
-                $appointments[$datetime]["client__id"] = $client_id;
+                $appointments[$datetime]["client_id"] = $client_id;
                 $appointments[$datetime]["firstname"] = $firstname;
                 $appointments[$datetime]["lastname"] = $lastname;
                 $appointments[$datetime]["comment"] = $comment;
@@ -190,8 +190,9 @@ function getClientID($username, $password)
     }
 }
 
-function getStatus($conn, $username, $password)
+function getStatus($username, $password)
 {
+    global $conn;
     $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id = client.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $client_row = mysqli_num_rows($result);

@@ -12,12 +12,13 @@ function getStatus($conn)
 
     $query = "SELECT * FROM `login` INNER JOIN `doctor` ON login.user_id = doctor.user_id WHERE username='$username' and password='$password'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-    $doctor_row = mysqli_num_rows($result);
+    $doctor_row =  mysqli_fetch_assoc($result);
 
     if ($client_row == 1) {
         $_SESSION['user_type'] = 'client';
-    } else if ($doctor_row == 1) {
+    } else if ($doctor_row) {
         $_SESSION['user_type'] = 'doctor';
+        $_SESSION['doctor_id'] = $doctor_row['doctor_id'];
     } else {
         $_SESSION['user_type'] = 'admin';
     }
@@ -39,7 +40,7 @@ if (isset($_POST['username'])) {
         if ($_SESSION['user_type'] == 'admin') {
             header("Location: ../client/select.php");
         } else if ($_SESSION['user_type'] == 'doctor') {
-            header("Location: ../doctor/select.php");
+            header("Location: ../client/calendar.php");
         } else if ($_SESSION['user_type'] == 'client') {
             header("Location: ../doctor/select.php");
         }

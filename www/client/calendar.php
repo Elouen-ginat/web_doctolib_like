@@ -88,25 +88,13 @@ function post($datetime, $comment)
 
 // HTML du calendrier
 $calendar = "";
-// Vérifiez si le formulaire a été soumis avec un rendez-vous
-$appointment_is_set = null;
-// Affiche l'overlay de commentaire
-$show_comment_overlay = false;
 
 updateSessionVar('date');
-updateSessionVar('comment');
-
-// On retourne sur la page de selection de médecin
-if (!$is_refresh && isset($_POST['prev_doctor'])) {
-    // prev page from doctor
-    $_SESSION['doctor_id'] = '';
-    header("Location:../doctor/select.php");
-    exit;
-}
 
 function getAPIResponse($dates)
 {
-    $url = 'http://localhost/api/appointment.php?id=' . $_SESSION["doctor_id"] . '&str_date=' . $dates["str_date"] . '&end_date=' . $dates["end_date"] . '';
+    $url = 'http://localhost/api/appointment.php?id=' . $_SESSION["doctor_id"] . '&str_date=' . $dates["str_date"] .
+        '&end_date=' . $dates["end_date"] . '&username=' . $_SESSION["username"] . '&password=' . $_SESSION["password"] . '';
     $ch = curl_init($url);
     try {
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -134,7 +122,7 @@ function getAPIResponse($dates)
 
 function getAppointments()
 {
-    global $error, $appointment_is_set;
+    global $error;
     //Recuperer les dates de debut de fin de semaine
     $date = getInputValue('date');
     $week = get_week($date);
@@ -156,24 +144,23 @@ function getAppointments()
     $days = array();
 
     //Create array of days format data
-    foreach ($appointments as $date => $user_id) {
+    foreach ($appointments as $date => $info) {
         $date = new DateTime($date);
         //Recupere le jour de date
         $day = $date->format('Y-m-d');
         //Recupere l'heure de date
         $time = $date->format('H:i:s');
         //Appointment free
-        $free = $user_id == null;
+        $free = $info == null;
         //Format date
         $date_str = $date->format('Y-m-d H:i:s');
-        $date_str_post = $date->format('Y-m-d_H:i:s');
         //Add to days array
         $days[$day][$time]["free"] = $free;
         $days[$day][$time]["datetime"] = $date_str;
-
-        //Si un rdv a été cliqué
-        if (isset($_POST[$date_str_post])) {
-            $appointment_is_set = $date_str;
+        if (!$free) {
+            $days[$day][$time]["comment"] = $info["comment"];
+            $days[$day][$time]["firstname"] = $info["firstname"];
+            $days[$day][$time]["lastname"] = $info["lastname"];
         }
     }
     return $days;
@@ -181,54 +168,7 @@ function getAppointments()
 
 $days = getAppointments();
 
-// Set the appointment datetime
-if ($appointment_is_set != null) {
-    $datetime = stripslashes($appointment_is_set);
-    try {
-        $datetime = new DateTime($datetime);
-    } catch (Exception $e) {
-        $error = "La date n'est pas valide";
-    }
-    $datetime = $datetime->format('Y-m-d H:i:s');
-    $_SESSION['datetime'] = $datetime;
-    $show_comment_overlay = true;
-}
-// Si le formulaire a été soumis avec un rendez-vous on poste le rendez-vous
-if (!$is_refresh && isset($_POST['comment']) && $_SESSION['datetime'] != null) {
-    $datetime = $_SESSION['datetime'];
-    $comment = stripslashes($_POST['comment']);
-    $sucess = post($datetime, $comment);
-    if (!$sucess) {
-        $error = "Impossible de prendre le rendez-vous";
-    }
-    $days = getAppointments();
-    $show_comment_overlay = false;
-}
-
 // Create HTML for the calendar
-
-function get_comment_overlay_html($show)
-{
-    if ($show) {
-        $style = "display:block";
-    } else {
-        $style = "display:none";
-    }
-    $html = '<div class="overlay"  style="' . $style . '">';
-    $html .= '<div class="comment-container">
-            <div class="comment-box">
-                <div class="comment-box-header">
-                    <span class="comment-box-title">Commentaire</span>
-                </div>
-                    <form class="comment-box-body" method="post">
-                        <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Votre commentaire">' . getInputValue("comment") . '</textarea>
-                        <input class="comment-submit" type="submit" name="comment_submit" value="Prendre rendez-vous" />
-                    </form>
-            </div>
-        </div>';
-    $html .= '</div>';
-    return $html;
-}
 
 function get_list_of_appointment(array $times)
 {
@@ -238,20 +178,24 @@ function get_list_of_appointment(array $times)
         $time_str = date('H:i', $time_str);
         if ($time_str == '00:00') {
             $time_str = 'Ne travaille pas';
-            $data["free"] = false;
+            $data["free"] = true;
         }
         if ($data["free"] && $time_str != "00:00") {
-            $color = "rgb(69, 176, 248)";
-            $html .= '<input class="appointment-time" type="submit" name="' . $data["datetime"] . '" value="' . $time_str . '" class="appointment-time" style="background-color:' . $color . '"></input>';
-        } else {
             $color = "#707275";
-            $html .= '<span class="appointment-time" style="background-color:' . $color . '">' . $time_str . '</span>';
+            $html .= '<div class="appointment-time" style="background-color:' . $color . '">' . $time_str . '</div>';
+        } else {
+            $color = "rgb(69, 176, 248)";
+            $html .= '<span class="appointment-time" style="background-color:' . $color . '">';
+            $html .= '<div>' . $time_str . '</div>';
+            $html .= '<div class="client-info">';
+            $html .= '<div class="client-name">' . $data["firstname"] . ' ' . $data["lastname"] . '</div>';
+            $html .= '<div class="client-comment">' . $data["comment"] . '</div>';
+            $html .= '</div>';
+            $html .= '</span>';
         }
     }
     return $html;
 }
-
-$overlay = get_comment_overlay_html($show_comment_overlay);
 
 foreach ($days as $day => $times) {
     $day_obj = strtotime($day);
@@ -276,13 +220,11 @@ foreach ($days as $day => $times) {
     <title>Doctor</title>
     <link rel="stylesheet" href="../assets/css/colors.css" />
     <link rel="stylesheet" href="../assets/css/bulma.min.css">
-    <link rel="stylesheet" href="../assets/css/calendar.css">
+    <link rel="stylesheet" href="../assets/css/calendar_client.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
-    <link rel="stylesheet" href="../assets/css/overlay.css" />
 </head>
 
 <body>
-    <?php echo $overlay; ?>
     <section class="hero is-medium is-info is-bold">
         <div class="hero-body">
             <div class="container has-text-centered">
@@ -290,7 +232,7 @@ foreach ($days as $day => $times) {
                     <a href="../index.php">DOCTOR</a>
                 </h1>
                 <h2 class="subtitle">
-                    Choisissez un rendez-vous
+                    Vos rendez-vous
                 </h2>
             </div>
         </div>
@@ -313,7 +255,6 @@ foreach ($days as $day => $times) {
             ?>
             <form class="calendar-form" method="post">
                 <div class="form-header">
-                    <input type="submit" name="prev_doctor" value="< Précedent" class="box-prev-button" formnovalidate>
                     <div class="date-input">
                         <legend>Date de rendez-vous</legend>
                         <input type="date" class="box-input" name="date" placeholder="Date du rendez-vous" onchange="submit()" value="<?php echo getInputValue('date'); ?>" required />
