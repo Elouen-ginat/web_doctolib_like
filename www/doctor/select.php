@@ -108,7 +108,7 @@ selectDoctor();
         </div>
     </section>
     <div class="navigation">
-        <form method="POST" action="logout.php">
+        <form class="logout-form" method="POST" action="logout.php">
             <a class="button" href="logout.php">
                 <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
                 <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>

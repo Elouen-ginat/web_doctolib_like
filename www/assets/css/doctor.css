@@ -19,10 +19,18 @@ body {
     font-family: "Arial";
 }
 
+.section {
+    height: fit-content;
+}
+
 .cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+}
+
+.logout-form {
+    height: fit-content;
 }
 
 .cards_item {
