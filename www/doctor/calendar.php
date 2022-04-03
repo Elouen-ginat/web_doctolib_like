@@ -215,7 +215,9 @@ foreach ($days as $day => $times) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
     <link rel="stylesheet" href="/assets/css/bulma.min.css">
-    <link rel="stylesheet" href="../assets/css/calendar.css" />
+    <link rel="stylesheet" href="../assets/css/calendar.css" >
+    <link rel="stylesheet" href="../assets/css/logout.css" />
+
 </head>
 
 <body>
@@ -231,6 +233,16 @@ foreach ($days as $day => $times) {
             </div>
         </div>
     </section>
+    <div class="navigation">
+        <form method="POST" action="logout.php">
+            <a class="button" href="logout.php">
+                <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
+                <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>
+                <div class="logout"> | Déconnexion</div>
+
+            </a>
+        </form>
+    </div>
     <section class="section">
         <div class="container">
             <?php
