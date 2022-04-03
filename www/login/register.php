@@ -23,10 +23,12 @@ function Search($search)
         session_unset();
         session_destroy();
         header("Location:../index.php");
+        exit;
     } else if ($search == "connect") {
         session_unset();
         session_destroy();
         header("Location:login.php");
+        exit;
     }
 }
 
@@ -397,7 +399,7 @@ if (isset($_GET['search']))
                 </fieldset>
                 <legend>Heure de début</legend>
                 <input type="time" class="box-input" name="str_hour" placeholder="Heure de début" value="<?php echo getInputValue('str_hour'); ?>" required />
-                <legend>Heure de finn</legend>
+                <legend>Heure de fin</legend>
                 <input type="time" class="box-input" name="end_hour" placeholder="Heure de fin" value="<?php echo getInputValue('end_hour'); ?>" required />
                 <div style="width:100%">
                     <input type="submit" name="prev_doctor" value="< Précedent" class="box-prev-button" formnovalidate>

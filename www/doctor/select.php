@@ -3,11 +3,11 @@
 session_start();
 // Vérifiez si l"utilisateur est connecté, sinon redirigez-le vers la page de connexion
 if (!isset($_SESSION["username"])) {
-    header("Location: login.php");
-    exit();
+    header("Location:../login/login.php");
+    exit;
 }
 $url = "http://localhost/api/doctor.php";
-$myData = file_get_contents("$url");
+$myData = file_get_contents($url);
 $json = json_decode($myData, true);
 
 function get_color($info, $day)
@@ -28,7 +28,7 @@ function selectDoctor()
     if (isset($_POST["doctor_id"])) {
         $doctor_id = $_POST["doctor_id"];
         $_SESSION["doctor_id"] = $doctor_id;
-        header("Location:success.php");
+        header("Location:calendar.php");
     }
 }
 
@@ -38,7 +38,7 @@ foreach ($json as $idx => $info) {
     $monday = get_color($info["activity_days"], "monday");
     $tuesday = get_color($info["activity_days"], "tuesday");
     $wednesday = get_color($info["activity_days"], "wednesday");
-    $thusday = get_color($info["activity_days"], "thusday");
+    $thursday = get_color($info["activity_days"], "thursday");
     $friday = get_color($info["activity_days"], "friday");
     $saturday = get_color($info["activity_days"], "saturday");
 
@@ -67,7 +67,7 @@ foreach ($json as $idx => $info) {
             <div class="card_hours">Disponible de ' . $info["str_hour"] . ' à ' . $info["end_hour"] . ' les :</div>
             <div class="card_dates">
                 <div class="date" style="background-color:' . $monday . '">Lundi</div>
-                <div class="date" style="background-color:' . $thusday . '">Jeudi</div>
+                <div class="date" style="background-color:' . $thursday . '">Jeudi</div>
                 <div class="date" style="background-color:' . $tuesday . '">Mardi</div>
                 <div class="date" style="background-color:' . $friday . '">Vendredi</div>
                 <div class="date" style="background-color:' . $wednesday . '">Mercredi</div>
@@ -99,7 +99,7 @@ selectDoctor();
         <div class="hero-body">
             <div class="container has-text-centered">
                 <h1 class="title">
-                    DOCTOR
+                    <a href="../index.php" >DOCTOR</a>
                 </h1>
                 <h2 class="subtitle">
                     Choisissez un médecin

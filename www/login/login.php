@@ -2,17 +2,42 @@
 require('../config.php');
 session_start();
 
+function getStatus($conn) {
+    $username = $_SESSION['username'];
+    $password = $_SESSION['password'];
+    $query = "SELECT * FROM `login` INNER JOIN `client` ON login.user_id WHERE username='$username' and password='$password'";
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $client_row = mysqli_num_rows($result);
+
+    $query = "SELECT * FROM `login` INNER JOIN `doctor` ON login.user_id WHERE username='$username' and password='$password'";
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $doctor_row = mysqli_num_rows($result);
+
+    if ($client_row == 1) {
+        $_SESSION['user_type'] = 'client';
+    } else if ($doctor_row == 1) {
+        $_SESSION['user_type'] = 'doctor';
+    } else {
+        $_SESSION['user_type'] = 'admin';
+    }
+    
+}
+
 if (isset($_POST['username'])) {
     $username = stripslashes($_REQUEST['username']);
     $username = mysqli_real_escape_string($conn, $username);
     $password = stripslashes($_REQUEST['password']);
     $password = mysqli_real_escape_string($conn, $password);
-    $query = "SELECT * FROM `login` WHERE username='$username' and password='" . hash('sha256', $password) . "'";
+    $hash = hash('sha256', $password);
+    $query = "SELECT * FROM `login` WHERE username='$username' and password='$hash'";
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-    $rows = mysqli_num_rows($result);
-    if ($rows == 1) {
+    $rows = mysqli_fetch_assoc($result);
+    if ($rows) {
         $_SESSION['username'] = $username;
-        header("Location: success_selection.php");
+        $_SESSION['password'] = $hash;
+        getStatus($conn); // admin, doctor, patient
+        header("Location:../doctor/select.php");
+        exit;
     } else {
         $message = "Le nom d'utilisateur ou le mot de passe est incorrect.";
     }
