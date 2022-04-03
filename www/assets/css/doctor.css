@@ -60,7 +60,6 @@ body {
     align-items: center;
     text-transform: uppercase;
     font-weight: bold; 
-    text-decoration: underline; 
     color: var(--title-text-color)
 }
 

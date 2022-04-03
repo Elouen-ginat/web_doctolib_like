@@ -70,7 +70,6 @@ body {
     align-items: center;
     text-transform: uppercase;
     font-weight: bold;
-    text-decoration: underline;
     color: var(--title-text-color)
 }
 
@@ -167,7 +166,7 @@ body {
     font-family: 'Courier New', Courier, monospace;
 }
 
-.enable {
+.enabled {
     display: flex;
     align-items: center;
     align-content: center;
@@ -177,7 +176,7 @@ body {
     width: 100%;
 }
 
-.rect-enable {
+.rect-enabled {
     width: fit-content;
     height: 100%;
     padding: 5px;
@@ -192,14 +191,28 @@ body {
     border-color: var(--second-button-color);
     border-width: 3px;
     border-style: solid;
+    overflow: hidden;
 }
 
-.enable-icon {
+.enabled-icon {
     height: 100%;
 }
 
-.enable-text {
+.enabled-text {
     font-size: 20px;
     color: var(--second-bg-color);
     margin: 10px;
+}
+
+p.errorMessage {
+    background-color: var(--error-bg-color);
+    border: var(--errro-border-color) 1px solid;
+    padding: 5px;
+    height: fit-content;
+    line-height: 30px;
+    vertical-align: middle;
+    border-radius: 5px;
+    width: fit-content;
+    color: white;
+    text-overflow: ellipsis;
 }

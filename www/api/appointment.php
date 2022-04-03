@@ -19,7 +19,14 @@ switch ($request_method) {
                     echo json_encode($error, JSON_PRETTY_PRINT);
                     return;
                 }
-                getAppointmentsDate($id, $str_date, $end_date);
+                if (!empty($_GET["username"]) && !empty($_GET["password"])) {
+                    $username = mysqli_real_escape_string($conn, $_GET["username"]);
+                    $password = mysqli_real_escape_string($conn, $_GET["password"]);
+                } else {
+                    $username = null;
+                    $password = null;
+                }
+                getAppointmentsDate($id, $str_date, $end_date, $username, $password);
             } else {
                 getAppointment($id);
             }
@@ -95,7 +102,7 @@ function getWorkingInfo($doctor_id = 0)
     }
 }
 
-function getAppointmentsDate($doctor_id, $str_date, $end_date)
+function getAppointmentsDate($doctor_id, $str_date, $end_date, $username, $password)
 {
     global $conn;
     header('Content-Type: application/json');
@@ -139,16 +146,31 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
         date_add($date, date_interval_create_from_date_string('1 day'));
     }
 
+    // Get status of user
+    $status = null;
+    if ($username != null && $password != null) {
+        $status = getStatus($username, $password);
+    }
 
     // Get all doctor's appointments
-    $query = "SELECT client_id, datetime FROM appointment WHERE doctor_id=" . $doctor_id;
+    $query = "SELECT client_id, datetime, comment FROM appointment INNER JOIN client ON appointment.client_id = client.client_id WHERE doctor_id=" . $doctor_id;
     $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
     $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
     foreach ($rows as $row) {
         $datetime = $row["datetime"];
         $client_id = $row["client_id"];
+        $comment = $row["comment"];
+        $firstname = $row["firstname"];
+        $lastname = $row["lastname"];
         if (array_key_exists($datetime, $appointments)) {
-            $appointments[$datetime] = $client_id;
+            if ($status == 'doctor') {
+                $appointments[$datetime]["client__id"] = $client_id;
+                $appointments[$datetime]["firstname"] = $firstname;
+                $appointments[$datetime]["lastname"] = $lastname;
+                $appointments[$datetime]["comment"] = $comment;
+            } else {
+                $appointments[$datetime] = $client_id;
+            }
         }
     }
     http_response_code(200);
@@ -183,7 +205,7 @@ function getStatus($conn, $username, $password)
     } else if ($doctor_row == 1) {
         return 'doctor';
     } else {
-        return'admin';
+        return 'admin';
     }
 }
 

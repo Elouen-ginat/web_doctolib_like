@@ -50,6 +50,7 @@
   margin-right: 0;
   margin-top: 3px;
   overflow: hidden;
+  white-space: nowrap;
   letter-spacing: 3px;
   opacity: 0;
   transition: opacity .7s;

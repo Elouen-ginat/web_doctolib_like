@@ -59,10 +59,11 @@ a.add-button {
   margin: 15px;
   color: #05AFF2;
   width: fit-content;
-  background-color: var(--main-button-color);
+  background-color: var(--second-button-color);
   transition: width .7s;
   -webkit-transition: width .9s;
   overflow: hidden;
+  white-space: nowrap;
   position: relative;
   display: flex;
   flex-direction: row;

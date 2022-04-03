@@ -20,29 +20,36 @@ if (isset($_SESSION['post'])) {
 }
 $_SESSION['post'] = $_POST;
 
-$url = "http://localhost/api/client.php?username=" . $_SESSION["username"] . "&password=" . $_SESSION["password"];
-$myData = file_get_contents($url);
-$json = json_decode($myData, true);
-
-function get_color($info, $day)
+function get_client_info()
 {
-    $info = json_decode($info, true);
-    if (!$info) {
-        return "#8A93A6";
+    global $error;
+    $url = "http://localhost/api/client.php?username=" . $_SESSION["username"] . "&password=" . $_SESSION["password"];
+    $myData = file_get_contents($url);
+    $json = json_decode($myData, true);
+    if (!$json) {
+        $error = "Erreur lors de la récupération des données";
     }
-    if (array_key_exists($day, $info)) {
-        return "#30BF45";
-    } else {
-        return "#8A93A6";
-    }
+    return $json;
 }
 
-function selectDoctor()
+// Ajouter un rendez-vous
+function post($enabled, $client_id)
 {
-    if (isset($_POST["doctor_id"])) {
-        $doctor_id = $_POST["doctor_id"];
-        $_SESSION["doctor_id"] = $doctor_id;
-        header("Location:calendar.php");
+    $url = "http://localhost/api/client.php";
+    $data = array(
+        'username' => $_SESSION["username"],
+        'password' => $_SESSION["password"], 'enabled' => $enabled, 'client_id' => $client_id
+    );
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    $response = curl_exec($ch);
+    $response = json_decode($response, true);
+    if ($response != null && $response["status"] == 200) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -62,7 +69,10 @@ function getInputValue(string $varname)
     return '';
 }
 
+$json = get_client_info();
+
 updateSessionVar('search');
+updateSessionVar('enabled');
 
 if (isset($_POST['search'])) {
     $search = strtolower($_POST['search']);
@@ -72,11 +82,33 @@ if (isset($_POST['search'])) {
     $json = $filtered_json;
     echo "eee";
 }
+if (isset($_POST['enabled'])) {
+    $client_id = stripslashes($_POST['enabled']);
+    $client_selected = array_filter($json, function ($item) use ($client_id) {
+        return $item['client_id'] == $client_id;
+    });
+    if ($client_selected != null) {
+        $client_selected = reset($client_selected);
+        $enabled = $client_selected['enabled'];
+        if (post(!$enabled, $client_id)) {
+            foreach ($json as $idx => $info) {
+                if ($info['client_id'] == $client_id) {
+                    $json[$idx]['enabled'] = !$enabled;
+                    break;
+                }
+            }
+        } else {
+            $error = "Une erreur est survenue lors de la modification du client";
+        }
+    } else {
+        $error = "Client introuvable";
+    }
+}
 
 $cards = '';
 foreach ($json as $idx => $info) {
 
-    $cards .= '<button class="cards_item" type="submit" name="doctor_id" value="' . $info["doctor_id"] . '"">
+    $cards .= '<button class="cards_item" type="submit" name="enabled" value="' . $info["client_id"] . '"">
         <div class="card_header">
             <img class="client_icon" src="../assets/svg/403019_avatar_male_man_person_user_icon.svg" />
             <div class="client_name">
@@ -106,26 +138,20 @@ foreach ($json as $idx => $info) {
             <div class="card_hours">Commentaire : </div>
             <div class="card_hours">' . $info["comment"] . '</div>
         </div>
-        <div class="enable">
-            <div class="rect-enable">
-                <img class="enable-icon" src="../assets/svg/1904654_cancel_close_cross_delete_reject_icon.svg" />
-                <div class="enable-text">Desactivé</div>
-            </div>
-        </div>
-    </button>';
+        <div class="enabled">';
+    if ($info["enabled"] == 1) {
+        $cards .=   '<div class="rect-enabled">
+                    <img class="enabled-icon" src="../assets/svg/430087_check_checkmark_circle_icon.svg" />
+                    <div class="enabled-text">Activé</div>
+                </div>';
+    } else {
+        $cards .=   '<div class="rect-enabled">
+                <img class="enabled-icon" src="../assets/svg/1904654_cancel_close_cross_delete_reject_icon.svg" />
+                <div class="enabled-text">Desactivé</div>
+            </div>';
+    }
+    $cards .=  '</div></button>';
 }
-
-// <div class="rect-enable">
-//                 <img class="enable-icon" src="../assets/svg/430087_check_checkmark_circle_icon.svg" />
-//                 <div class="enable-text">Activé</div>
-//             </div>
-// <div class="rect-enable">
-//                 <img class="enable-icon" src="../assets/svg/1904654_cancel_close_cross_delete_reject_icon.svg" />
-//                 <div class="enable-text">Desactivé</div>
-//             </div>
-
-selectDoctor();
-
 
 ?>
 
@@ -138,7 +164,7 @@ selectDoctor();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
     <link rel="stylesheet" href="../assets/css/colors.css" />
-    <link rel="stylesheet" href="/assets/css/bulma.min.css">
+    <link rel="stylesheet" href="../assets/css/bulma.min.css">
     <link rel="stylesheet" href="../assets/css/client.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
     <link rel="stylesheet" href="../assets/css/add.css" />
@@ -152,14 +178,20 @@ selectDoctor();
                     <a href="../index.php">DOCTOR</a>
                 </h1>
                 <h2 class="subtitle">
-                    Choisissez un médecin
+                    Activez desactivé des clients
                 </h2>
             </div>
         </div>
     </section>
+
     <div class="navigation">
         <form class="logout-search-form" method="POST">
             <input class="search-input" type="text" name="search" placeholder="Rechercher un client" value="<?php echo getInputValue('search'); ?>" onchange="submit()" />
+            <?php
+            if (!empty($error)) {
+                echo "<p class='errorMessage'>$error</p>";
+            }
+            ?>
             <a class="logout-button" href="../login/logout.php">
                 <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
                 <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>

@@ -78,7 +78,6 @@ function post($datetime, $comment)
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     $response = curl_exec($ch);
-    echo $response;
     $response = json_decode($response, true);
     if ($response != null && $response["status"] == 200) {
         return true;
@@ -277,7 +276,7 @@ foreach ($days as $day => $times) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
     <link rel="stylesheet" href="../assets/css/colors.css" />
-    <link rel="stylesheet" href="/assets/css/bulma.min.css">
+    <link rel="stylesheet" href="../assets/css/bulma.min.css">
     <link rel="stylesheet" href="../assets/css/calendar.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
     <link rel="stylesheet" href="../assets/css/overlay.css" />
