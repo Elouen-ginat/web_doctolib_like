@@ -213,6 +213,8 @@ span.appointment-time:hover .client-info {
     font-size: 14px;
     margin-bottom: 5px;
     font-style: italic;
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 .week1 {

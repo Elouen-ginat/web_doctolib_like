@@ -80,10 +80,9 @@ if (isset($_SESSION['post_search'])) {
         return strpos(strtolower($item['lastname']), $search) !== false || strpos(strtolower($item['firstname']), $search) !== false;
     });
     $json = $filtered_json;
-    echo "eee";
 }
-if (isset($_SESSION['post_enabled'])) {
-    $client_id = stripslashes($_SESSION['post_enabled']);
+if (isset($_POST['enabled'])) {
+    $client_id = stripslashes($_POST['enabled']);
     $client_selected = array_filter($json, function ($item) use ($client_id) {
         return $item['client_id'] == $client_id;
     });

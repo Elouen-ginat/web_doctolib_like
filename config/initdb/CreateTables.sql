@@ -57,11 +57,11 @@ INSERT INTO `login` VALUES (NULL, 'EG', 'EG@gmail.com', 'CLIENT', '680993ea7ad5e
 (NULL, 'LT', 'LT@gmail.com', 'DOCTOR', '164fdd92b1eeddc0d9727131ae3d026c41b1ced4a7a076b2d411fab1e5ec64cc', true), 
 (NULL, 'VC', 'VC@gmail.com', 'DOCTOR', '88e6c001091f71bc66ff59650f4da52058bd41924df2477f092089c6c15feee3', true);
 
-INSERT INTO client VALUES ( NULL, 2,  'Elouen', 'Ginat', '01/01/1999', '15 rue Pascal, 35170 Bruz', '0610121315','EG@gmail.com' , 'Bonjour je suis un petit peu timide mais sinon ça va' ),
-( NULL, 3, 'Clément', 'François', '18/10/1999', '16 rue du Volley, 35170 Bruz', '0670787910','CF@gmail.com' , 'Bonjour je juste posé en train de décrire ma journée' ),
-( NULL, 4,  'Zacharie', 'Bouhin', '06/05/1998', '17 rue Ensai Studio, 35170 Bruz', '0610132515','ZB@gmail.com' , '' ),
-( NULL, 5 , 'Louis', 'PL', '21/12/1999', '20 rue du 18 et 19, 35170 Bruz', '0615269875','LPL@gmail.com' , 'RAS' );
+INSERT INTO client VALUES ( NULL, 2,  'Elouen', 'Ginat', '1999-01-01', '15 rue Pascal, 35170 Bruz', '0610121315','EG@gmail.com' , 'Bonjour je suis un petit peu timide mais sinon ça va' ),
+( NULL, 3, 'Clément', 'François', '1999-10-18', '16 rue du Volley, 35170 Bruz', '0670787910','CF@gmail.com' , 'Bonjour je juste posé en train de décrire ma journée' ),
+( NULL, 4,  'Zacharie', 'Bouhin', '1998-05-06', '17 rue Ensai Studio, 35170 Bruz', '0610132515','ZB@gmail.com' , '' ),
+( NULL, 5 , 'Louis', 'PL', '1999-12-21', '20 rue du 18 et 19, 35170 Bruz', '0615269875','LPL@gmail.com' , 'RAS' );
 
-INSERT INTO doctor VALUES (NULL, 6, 'Olivier', 'Biau', '0607787945', 'Bagneux', {'monday':true, 'tuesday':true, 'friday' : true}, 08:15:00, 14:55:00),
-(NULL, 7, 'Laurent', 'Tardif', '0182565567', 'Paris', {'monday':true, 'tuesday':true}, 07:15:00, 17:55:00),
-(NULL, 8, 'Valerie', 'Chretien', '0608858545', 'Lorient', {'monday':true, 'tuesday':true, 'friday' : true}, 09:20:00, 12:55:00);
+INSERT INTO doctor VALUES (NULL, 6, 'Olivier', 'Biau', '0607787945', 'Bagneux', '{"monday":true, "tuesday":true, "friday" : true}', '08:15:00', '14:55:00'),
+(NULL, 7, 'Laurent', 'Tardif', '0182565567', 'Paris', '{"monday":true, "tuesday":true}', '07:15:00', '17:55:00'),
+(NULL, 8, 'Valerie', 'Chretien', '0608858545', 'Lorient', '{"monday":true, "tuesday":true, "friday" : true}', '09:20:00', '12:55:00');
