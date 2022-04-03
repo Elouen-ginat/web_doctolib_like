@@ -196,6 +196,7 @@ if ($appointment_is_set != null) {
 }
 // Si le formulaire a été soumis avec un rendez-vous on poste le rendez-vous
 if (!$is_refresh && isset($_POST['comment']) && $_SESSION['datetime'] != null) {
+    $datetime = $_SESSION['datetime'];
     $comment = stripslashes($_POST['comment']);
     $sucess = post($datetime, $comment);
     if (!$sucess) {
@@ -214,21 +215,20 @@ function get_comment_overlay_html($show)
     } else {
         $style = "display:none";
     }
-    $html = '<div class="comment-container" style="' . $style . '">
+    $html = '<div class="overlay"  style="' . $style . '">';
+    $html .= '<div class="comment-container">
             <div class="comment-box">
                 <div class="comment-box-header">
                     <span class="comment-box-title">Commentaire</span>
-                    <span class="comment-box-close">&times;</span>
                 </div>
-                <div class="comment-box-body">
-                    <form method="post">
+                    <form class="comment-box-body" method="post">
                         <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Votre commentaire"
-                            value="<?php echo getInputValue("comment"); ?>"></textarea>
-                        <input type="submit" name="comment_submit" value="Prendre rendez-vous" />
+                            value="' . getInputValue("comment") . '"></textarea>
+                        <input class="comment-submit" type="submit" name="comment_submit" value="Prendre rendez-vous" />
                     </form>
-                </div>
             </div>
         </div>';
+    $html .= '</div>';
     return $html;
 }
 
@@ -240,6 +240,7 @@ function get_list_of_appointment(array $times)
         $time_str = date('H:i', $time_str);
         if ($time_str == '00:00') {
             $time_str = 'Ne travaille pas';
+            $data["free"] = false;
         }
         if ($data["free"] && $time_str != "00:00") {
             $color = "rgb(69, 176, 248)";
@@ -275,6 +276,7 @@ foreach ($days as $day => $times) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
+    <link rel="stylesheet" href="../assets/css/colors.css" />
     <link rel="stylesheet" href="/assets/css/bulma.min.css">
     <link rel="stylesheet" href="../assets/css/calendar.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
@@ -282,9 +284,7 @@ foreach ($days as $day => $times) {
 </head>
 
 <body>
-    <div class="overlay">
-        <?php echo $overlay; ?>
-    </div>
+    <?php echo $overlay; ?>
     <section class="hero is-medium is-info is-bold">
         <div class="hero-body">
             <div class="container has-text-centered">
@@ -298,12 +298,11 @@ foreach ($days as $day => $times) {
         </div>
     </section>
     <div class="navigation">
-        <form class="logout-form" method="POST" action="logout.php">
-            <a class="button" href="../login/logout.php">
+        <form class="logout-form" method="POST">
+            <a class="logout-button" href="../login/logout.php">
                 <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
                 <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>
                 <div class="logout"> | Déconnexion</div>
-
             </a>
         </form>
     </div>

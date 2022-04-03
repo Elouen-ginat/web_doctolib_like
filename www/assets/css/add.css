@@ -1,0 +1,85 @@
+
+.navigation-add {
+  width: 100%;
+  position: relative;
+  bottom: 5px;
+  height:fit-content;
+}
+
+.add-form {
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: space-around;
+  justify-content: center;
+  margin: 0;
+}
+
+.add-button .images {
+  width: 100%;
+  max-width: 20px;
+  float: left;
+}
+
+.add-button .pseudo {
+  font-size: 15px;
+  float: left;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-left: 5px;
+  margin-right: 0px;
+  margin-top: 3px;
+  color: #000;
+}
+
+.add-button .logout {
+  width: 0%;
+  font-size: 0px;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 3px;
+  overflow: hidden;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity .7s;
+  -webkit-transition: opacity .9s;
+  transition: font-size .5s;
+  transition: margin-left .5s;
+  transition: margin-right .5s;
+  transition: width .5s;
+
+}
+
+a.add-button {
+  text-decoration: none;
+  padding: 12px;
+  margin: 15px;
+  color: #05AFF2;
+  width: fit-content;
+  background-color: var(--main-button-color);
+  transition: width .7s;
+  -webkit-transition: width .9s;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 5px;
+}
+
+a.add-button:hover {
+  color: #000;
+  text-transform: uppercase;
+}
+
+a.add-button:hover .logout {
+  opacity: .9;
+  font-size: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: fit-content;
+  transition: all .5s;
+}

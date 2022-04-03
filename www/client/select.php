@@ -12,6 +12,14 @@ if (!isset($_SESSION["user_type"]) || $_SESSION["user_type"] != "admin") {
     exit;
 }
 
+$is_refresh = false;
+if (isset($_SESSION['post'])) {
+    if ($_SESSION['post'] == $_POST) {
+        $is_refresh = true;
+    }
+}
+$_SESSION['post'] = $_POST;
+
 $url = "http://localhost/api/client.php?username=" . $_SESSION["username"] . "&password=" . $_SESSION["password"];
 $myData = file_get_contents($url);
 $json = json_decode($myData, true);
@@ -38,18 +46,45 @@ function selectDoctor()
     }
 }
 
+function updateSessionVar(string $varname)
+{
+    // récupérer les post
+    if (isset($_POST[$varname])) {
+        $_SESSION["post_$varname"] = $_POST[$varname];
+    }
+}
+
+function getInputValue(string $varname)
+{
+    if (isset($_SESSION["post_$varname"])) {
+        return htmlspecialchars($_SESSION["post_$varname"], ENT_QUOTES);
+    }
+    return '';
+}
+
+updateSessionVar('search');
+
+if (isset($_POST['search'])) {
+    $search = strtolower($_POST['search']);
+    $filtered_json = array_filter($json, function ($item) use ($search) {
+        return strpos(strtolower($item['lastname']), $search) !== false || strpos(strtolower($item['firstname']), $search) !== false;
+    });
+    $json = $filtered_json;
+    echo "eee";
+}
+
 $cards = '';
 foreach ($json as $idx => $info) {
 
     $cards .= '<button class="cards_item" type="submit" name="doctor_id" value="' . $info["doctor_id"] . '"">
         <div class="card_header">
-            <img class="doctor_icon" src="../assets/svg/403019_avatar_male_man_person_user_icon.svg" />
-            <div class="doctor_name">
+            <img class="client_icon" src="../assets/svg/403019_avatar_male_man_person_user_icon.svg" />
+            <div class="client_name">
                 <p>' . $info["lastname"] . ' ' . $info["firstname"] . '</p>
             </div>
-            <img class="doctor_arrow" src="../assets/svg/arrow-right-svgrepo-com.svg" />
+            <img class="client_arrow" src="../assets/svg/arrow-right-svgrepo-com.svg" />
         </div>
-        <div class="doctor_info_recto">
+        <div class="client_info_recto">
             <div class="info">
                 <img class="info_def" src="../assets/svg/172496_location_icon.svg" />
                  <div class="info_office">'  . $info["adresse"] . '</div>
@@ -67,12 +102,27 @@ foreach ($json as $idx => $info) {
                  <div class="info_office">'  . $info["birthday"] . '</div>
             </div>
         </div>
-        <div class="doctor_info_verso">
+        <div class="client_info_verso">
             <div class="card_hours">Commentaire : </div>
             <div class="card_hours">' . $info["comment"] . '</div>
         </div>
+        <div class="enable">
+            <div class="rect-enable">
+                <img class="enable-icon" src="../assets/svg/1904654_cancel_close_cross_delete_reject_icon.svg" />
+                <div class="enable-text">Desactivé</div>
+            </div>
+        </div>
     </button>';
 }
+
+// <div class="rect-enable">
+//                 <img class="enable-icon" src="../assets/svg/430087_check_checkmark_circle_icon.svg" />
+//                 <div class="enable-text">Activé</div>
+//             </div>
+// <div class="rect-enable">
+//                 <img class="enable-icon" src="../assets/svg/1904654_cancel_close_cross_delete_reject_icon.svg" />
+//                 <div class="enable-text">Desactivé</div>
+//             </div>
 
 selectDoctor();
 
@@ -87,9 +137,11 @@ selectDoctor();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
+    <link rel="stylesheet" href="../assets/css/colors.css" />
     <link rel="stylesheet" href="/assets/css/bulma.min.css">
-    <link rel="stylesheet" href="../assets/css/doctor.css">
+    <link rel="stylesheet" href="../assets/css/client.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
+    <link rel="stylesheet" href="../assets/css/add.css" />
 </head>
 
 <body>
@@ -106,8 +158,9 @@ selectDoctor();
         </div>
     </section>
     <div class="navigation">
-        <form class="logout-form" method="POST" action="logout.php">
-            <a class="button" href="../login/logout.php">
+        <form class="logout-search-form" method="POST">
+            <input class="search-input" type="text" name="search" placeholder="Rechercher un client" value="<?php echo getInputValue('search'); ?>" onchange="submit()" />
+            <a class="logout-button" href="../login/logout.php">
                 <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
                 <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>
                 <div class="logout"> | Déconnexion</div>
@@ -124,6 +177,16 @@ selectDoctor();
             </form>
         </div>
     </section>
+
+    <div class="navigation-add">
+        <form class="add-form" method="POST">
+            <a class="add-button" href="../login/register.php">
+                <img class="images" src="../assets/svg/134224_add_plus_new_icon.svg">
+                <div class="pseudo"> Ajouter un client </div>
+                <div class="logout">...</div>
+            </a>
+        </form>
+    </div>
 </body>
 
 </html>

@@ -331,6 +331,7 @@ if (isset($_GET['search'])) {
 <html>
 
 <head>
+    <link rel="stylesheet" href="../assets/css/colors.css" />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <script onload="onLoad();" src="../assets/javascript/loginAnimation.js"></script>
 </head>

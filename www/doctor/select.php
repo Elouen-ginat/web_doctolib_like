@@ -90,8 +90,9 @@ selectDoctor();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Doctor</title>
+    <link rel="stylesheet" href="../assets/css/colors.css" />
     <link rel="stylesheet" href="/assets/css/bulma.min.css">
-    <link rel="stylesheet" href="../assets/css/doctor.css" >
+    <link rel="stylesheet" href="../assets/css/doctor.css">
     <link rel="stylesheet" href="../assets/css/logout.css" />
 </head>
 
@@ -100,7 +101,7 @@ selectDoctor();
         <div class="hero-body">
             <div class="container has-text-centered">
                 <h1 class="title">
-                    <a href="../index.php" >DOCTOR</a>
+                    <a href="../index.php">DOCTOR</a>
                 </h1>
                 <h2 class="subtitle">
                     Choisissez un médecin
@@ -109,8 +110,8 @@ selectDoctor();
         </div>
     </section>
     <div class="navigation">
-        <form class="logout-form" method="POST" action="logout.php">
-            <a class="button" href="../login/logout.php">
+        <form class="logout-form" method="POST">
+            <a class="logout-button" href="../login/logout.php">
                 <img class="images" src="../assets/svg/turn-off-svgrepo-com.svg">
                 <div class="pseudo"> <?php echo $_SESSION["username"] ?> </div>
                 <div class="logout"> | Déconnexion</div>

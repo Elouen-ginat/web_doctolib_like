@@ -1,0 +1,16 @@
+:root {
+    --main-bg-color: #1c232d;
+    --second-bg-color: #e7ebea;
+    --box-bg-color: #f2f6ff;
+    --error-bg-color: #b22f2f;
+
+    --border-color: #c4c4c4;
+    --errro-border-color: #811a00;
+
+    --main-button-color: #526dd5;
+    --second-button-color: #05AFF2;
+    --third-button-color: #02a1e0;
+
+    --second-text-color: #707275;
+    --title-text-color: #1b232d;
+}
