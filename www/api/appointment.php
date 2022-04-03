@@ -82,12 +82,13 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
     global $conn;
     header('Content-Type: application/json');
     // Get str_hour and end_hour of doctor
-    $query = "SELECT str_hour, end_hour FROM doctor WHERE doctor_id=" . $doctor_id . " LIMIT 1";
+    $query = "SELECT str_hour, end_hour, activity_days FROM doctor WHERE doctor_id=" . $doctor_id . " LIMIT 1";
     $result = mysqli_query($conn, $query);
     $doctor = mysqli_fetch_assoc($result);
     if ($doctor != null) {
         $str_hour = new DateTime($doctor["str_hour"]);
         $end_hour = new DateTime($doctor["end_hour"]);
+        $activity_days = json_decode($doctor["activity_days"], true);
     } else {
         $error = array("id" => "$doctor_id", "error" => "No doctor found");
         http_response_code(500);
@@ -97,21 +98,27 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
     // Get all appointments interval hours
     $date = $str_date;
     $appointments = array();
-    $max_iter = 1000000;
+    $max_iter = 100000;
     while ($date <= $end_date) {
-        $hour = DateTime::createFromFormat("Y-m-d H:i:s", $date->format("Y-m-d") . $str_hour->format("H:i:s"));
-        $end_date_hour = DateTime::createFromFormat("Y-m-d H:i:s", $date->format("Y-m-d") . $end_hour->format("H:i:s"));
-        while ($hour <= $end_date_hour) {
-            $key = $hour->format("Y-m-d H:i:s");
-            $appointments["$key"] = null;
-            date_add($hour, date_interval_create_from_date_string(APPTMENT_DUR . " sec"));
-            $max_iter = $max_iter - 1;
-            if ($max_iter < 0) {
-                $error = array("error" => "Too much value to return");
-                http_response_code(500);
-                echo json_encode($error, JSON_PRETTY_PRINT);
-                return;
+        // Test si la date est un jour ou travaille le docteur
+        if (array_key_exists(strtolower($date->format("l")), $activity_days)) {
+            $hour = DateTime::createFromFormat("Y-m-d H:i:s", $date->format("Y-m-d") . $str_hour->format("H:i:s"));
+            $end_date_hour = DateTime::createFromFormat("Y-m-d H:i:s", $date->format("Y-m-d") . $end_hour->format("H:i:s"));
+            while ($hour <= $end_date_hour) {
+                $key = $hour->format("Y-m-d H:i:s");
+                $appointments[$key] = null;
+                date_add($hour, date_interval_create_from_date_string(APPTMENT_DUR . " sec"));
+                $max_iter = $max_iter - 1;
+                if ($max_iter < 0) {
+                    $error = array("error" => "Too much value to return");
+                    http_response_code(500);
+                    echo json_encode($error, JSON_PRETTY_PRINT);
+                    return;
+                }
             }
+        }else {
+            $key = $date->format("Y-m-d");
+            $appointments[$key] = null;
         }
         date_add($date, date_interval_create_from_date_string('1 day'));
     }
@@ -123,31 +130,55 @@ function getAppointmentsDate($doctor_id, $str_date, $end_date)
     while ($row = mysqli_fetch_assoc($result)) {
         $datetime = $row["datetime"];
         $client_id = $row["client_id"];
-        $appointments["$datetime"] = $client_id;
+        if (array_key_exists($datetime, $appointments)) {
+            $appointments[$datetime] = $client_id;
+        }
     }
     http_response_code(200);
     echo json_encode($appointments, JSON_PRETTY_PRINT);
+}
+
+function getClientID($username, $password)
+{
+    global $conn;
+    $query = "SELECT client_id FROM `login` INNER JOIN `client` ON login.user_id WHERE username='$username' and password='$password'";
+    $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+    $client_row = mysqli_fetch_assoc($result);
+    if ($client_row != null) {
+        return $client_row["client_id"];
+    } else {
+        return null;
+    }
 }
 
 function AddAppointment()
 {
     header('Content-Type: application/json');
     global $conn;
-    $doctor_id = $_POST["doctor_id"];
-    $client_id = $_POST["client_id"];
-    $datetime = $_POST["datetime"];
+    $doctor_id = stripslashes($_POST["doctor_id"]);
+    $datetime = stripslashes($_POST["datetime"]);
+    $username = stripslashes($_POST["username"]);
+    $password = stripslashes($_POST["password"]);
 
-    echo $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`) VALUES ('$doctor_id','$client_id','$datetime')";
-    if (mysqli_query($conn, $query)) {
-        $response = array(
-            'status' => 200,
-            'status_message' => 'RDV ajoute avec succes.'
-        );
-    } else {
+    $client_id = getClientID($username, $password);
+    if ($client_id == null) {
         $response = array(
             'status' => 500,
-            'status_message' => 'erreur. ' . mysqli_error($conn)
+            'status_message' => 'erreur. Vous n\'êtes pas un client'
         );
+    } else {
+        $query = "INSERT INTO `appointment`(`doctor_id`, `client_id`, `datetime`) VALUES ('$doctor_id','$client_id','$datetime')";
+        if (mysqli_query($conn, $query)) {
+            $response = array(
+                'status' => 200,
+                'status_message' => 'RDV ajoute avec succes.'
+            );
+        } else {
+            $response = array(
+                'status' => 500,
+                'status_message' => 'erreur. ' . mysqli_error($conn)
+            );
+        }
     }
     header('Content-Type: application/json');
     echo json_encode($response);

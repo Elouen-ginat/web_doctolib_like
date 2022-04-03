@@ -1,4 +1,3 @@
-
 :root {
   --main-bg-color: #1c232d;
   --second-bg-color: #e7ebea;
@@ -19,6 +18,7 @@ body {
   background: var(--main-bg-color);
   font-family: "Arial";
 }
+
 .box {
   padding: 30px 25px 10px 25px;
   background: var(--box-bg-color);
@@ -27,11 +27,13 @@ body {
   border-radius: 5px;
   overflow: hidden;
 }
+
 h1.box-logo a.box-logo {
-  text-decoration:none;
-  font-size:40px;
+  text-decoration: none;
+  font-size: 40px;
   color: var(--title-text-color);
 }
+
 h1.box-title {
   color: var(--second-text-color);
   background: var(--second-bg-color);
@@ -39,9 +41,10 @@ h1.box-title {
   padding: 15px 25px;
   line-height: 30px;
   font-size: 25px;
-  text-align:center;
+  text-align: center;
   margin: -31px -26px 18px;
 }
+
 .box-button {
   border-radius: 5px;
   background: var(--main-button-color);
@@ -55,8 +58,9 @@ h1.box-title {
   padding: 0;
   color: white;
   border: 0;
-  outline:0;
+  outline: 0;
 }
+
 .box-register-button {
   border-radius: 5px;
   background: var(--main-button-color);
@@ -69,11 +73,12 @@ h1.box-title {
   padding: 0;
   color: white;
   border: 0;
-  outline:0;
+  outline: 0;
 }
+
 .box-next-button {
   border-radius: 5px;
-  float:right;
+  float: right;
   background: var(--main-button-color);
   text-align: center;
   cursor: pointer;
@@ -83,12 +88,13 @@ h1.box-title {
   padding: 0;
   color: white;
   border: 0;
-  outline:0;
+  outline: 0;
   margin-bottom: 15px;
 }
+
 .box-prev-button {
   border-radius: 5px;
-  float:left;
+  float: left;
   background: var(--main-button-color);
   text-align: center;
   cursor: pointer;
@@ -98,22 +104,24 @@ h1.box-title {
   padding: 0;
   color: white;
   border: 0;
-  outline:0;
+  outline: 0;
   margin-bottom: 15px;
 }
-.box-register
-{
+
+.box-register {
   width: 100%;
-  text-align:center;
-  margin-bottom:0px;
+  text-align: center;
+  margin-bottom: 0px;
 }
-.box-register a
-{
-  text-decoration:none;
-  font-size:12px;
-  color:#666;
+
+.box-register a {
+  text-decoration: none;
+  font-size: 12px;
+  color: #666;
 }
-.box-input, fieldset{
+
+.box-input,
+fieldset {
   width: 95%;
   font-size: 14px;
   background: var(--second-bg-color);
@@ -123,20 +131,24 @@ h1.box-title {
   border-radius: 5px;
   height: 50px;
 }
+
 input::placeholder {
   color: var(--second-text-color);
 }
+
 input:invalid {
   border-color: var(--errro-border-color);
 }
+
 legend {
   font-size: 16px;
   background: var(--second-bg-color);
   border-radius: 5px;
   padding: 3px;
 }
+
 .box-radio {
-  color:var(--second-text-color);
+  color: var(--second-text-color);
   width: 93%;
   font-size: 14px;
   display: flex;
@@ -147,14 +159,17 @@ legend {
   border-radius: 5px;
   background-color: var(--second-bg-color);
 }
+
 input[type="radio"] {
   appearance: none;
   display: none;
 }
+
 input[type="checkbox"] {
   appearance: none;
   display: none;
 }
+
 label {
   line-height: 32px;
   display: flex;
@@ -170,69 +185,87 @@ label {
   color: var(--second-text-color);
   border: 1px solid var(--border-color);
 }
+
 label.radio {
   width: 100px;
   height: 40px;
 }
+
 label.checkbox {
   width: 50px;
   height: 40px;
   margin-bottom: 5px;
   flex-basis: 25%;
 }
-input[type="radio"]:checked + label {
+
+input[type="radio"]:checked+label {
   background-color: var(--main-button-color);
   color: white;
   font-weight: 900;
   transition: 0.3s;
 }
-input[type="checkbox"]:checked + label {
+
+input[type="checkbox"]:checked+label {
   background-color: var(--main-button-color);
   color: white;
   font-weight: 900;
   transition: 0.3s;
 }
+
 .box-input:focus {
   outline: none;
-  border-color:#5c7186;
+  border-color: #5c7186;
 }
-.sucess h3 p{
+
+.sucess h3 p {
   text-align: center;
   color: var(--main-bg-color);
 }
+
 .sucess a {
   text-decoration: none;
   color: var(--second-button-color);
 }
+
 p.errorMessage {
-    background-color: var(--error-bg-color);
-    border: var(--errro-border-color) 1px solid;
-    margin-bottom: 25px;
-    padding: 5px 10px;
-    height: fit-content;
-    line-height:30px;
-    vertical-align: middle;
-    border-radius: 5px;
-    width: 93%;
-    color: white;
-    text-overflow: ellipsis;
+  background-color: var(--error-bg-color);
+  border: var(--errro-border-color) 1px solid;
+  margin-bottom: 25px;
+  padding: 5px 10px;
+  height: fit-content;
+  line-height: 30px;
+  vertical-align: middle;
+  border-radius: 5px;
+  width: 93%;
+  color: white;
+  text-overflow: ellipsis;
 }
 
 @keyframes next {
-  from {width: 100%;}
-  to {width: 0%;}
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }
 
 @keyframes prev {
-  from {width: 0%;}
-  to {width: 100%;}
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
 }
 
 .float-container {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
 .float-user-child {
@@ -245,7 +278,8 @@ p.errorMessage {
   flex-direction: column;
   border-left: 3px solid var(--main-button-color);
   border-radius: 5px;
-}  
+}
+
 .float-client-child {
   width: 0%;
   float: left;
@@ -256,7 +290,8 @@ p.errorMessage {
   flex-direction: column;
   border-left: 3px solid var(--second-button-color);
   border-radius: 5px;
-} 
+}
+
 .float-doctor-child {
   width: 0%;
   float: left;
@@ -267,7 +302,7 @@ p.errorMessage {
   flex-direction: column;
   border-left: 3px solid var(--main-button-color);
   border-radius: 5px;
-} 
+}
 
 .float-success-child {
   width: 0%;
@@ -279,7 +314,7 @@ p.errorMessage {
   flex-direction: column;
   border-left: 3px solid var(--second-button-color);
   border-radius: 5px;
-} 
+}
 
 .next-animation {
   animation-name: next;
